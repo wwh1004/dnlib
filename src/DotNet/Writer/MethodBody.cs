@@ -147,8 +147,7 @@ namespace dnlib.DotNet.Writer {
 
 		/// <inheritdoc/>
 		public override bool Equals(object obj) {
-			var other = obj as MethodBody;
-			if (other is null)
+			if (obj is not MethodBody other)
 				return false;
 			return Utils.Equals(code, other.code) &&
 				Utils.Equals(extraSections, other.extraSections);

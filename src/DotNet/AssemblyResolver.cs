@@ -783,24 +783,22 @@ namespace dnlib.DotNet {
 				var dirName = Path.GetDirectoryName(Path.GetFullPath(configFileName));
 				searchPaths.Add(dirName);
 
-				using (var xmlStream = new FileStream(configFileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-					var doc = new XmlDocument();
-					doc.Load(XmlReader.Create(xmlStream));
-					foreach (var tmp in doc.GetElementsByTagName("probing")) {
-						var probingElem = tmp as XmlElement;
-						if (probingElem is null)
+				using var xmlStream = new FileStream(configFileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+				var doc = new XmlDocument();
+				doc.Load(XmlReader.Create(xmlStream));
+				foreach (var tmp in doc.GetElementsByTagName("probing")) {
+					if (tmp is not XmlElement probingElem)
+						continue;
+					var privatePath = probingElem.GetAttribute("privatePath");
+					if (string.IsNullOrEmpty(privatePath))
+						continue;
+					foreach (var tmp2 in privatePath.Split(';')) {
+						var path = tmp2.Trim();
+						if (path == "")
 							continue;
-						var privatePath = probingElem.GetAttribute("privatePath");
-						if (string.IsNullOrEmpty(privatePath))
-							continue;
-						foreach (var tmp2 in privatePath.Split(';')) {
-							var path = tmp2.Trim();
-							if (path == "")
-								continue;
-							var newPath = Path.GetFullPath(Path.Combine(dirName, path.Replace('\\', Path.DirectorySeparatorChar)));
-							if (Directory.Exists(newPath) && newPath.StartsWith(baseDir + Path.DirectorySeparatorChar))
-								searchPaths.Add(newPath);
-						}
+						var newPath = Path.GetFullPath(Path.Combine(dirName, path.Replace('\\', Path.DirectorySeparatorChar)));
+						if (Directory.Exists(newPath) && newPath.StartsWith(baseDir + Path.DirectorySeparatorChar))
+							searchPaths.Add(newPath);
 					}
 				}
 			}

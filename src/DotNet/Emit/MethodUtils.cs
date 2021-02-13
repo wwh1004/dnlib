@@ -274,10 +274,10 @@ namespace dnlib.DotNet.Emit {
 				case Code.Ldc_I4:
 				case Code.Ldc_I4_S:
 					int i4;
-					if (instr.Operand is int)
-						i4 = (int)instr.Operand;
-					else if (instr.Operand is sbyte)
-						i4 = (sbyte)instr.Operand;
+					if (instr.Operand is int @int)
+						i4 = @int;
+					else if (instr.Operand is sbyte sb)
+						i4 = sb;
 					else
 						break;
 					switch (i4) {
@@ -469,8 +469,7 @@ namespace dnlib.DotNet.Emit {
 					case Code.Leave:	shortOpCode = OpCodes.Leave_S; break;
 					default: continue;
 					}
-					var targetInstr = instr.Operand as Instruction;
-					if (targetInstr is null)
+					if (instr.Operand is not Instruction targetInstr)
 						continue;
 
 					int afterShortInstr;

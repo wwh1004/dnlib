@@ -44,15 +44,15 @@ namespace dnlib.DotNet.Pdb.Symbols {
 			if (Line == 0xFEEFEE && EndLine == 0xFEEFEE)
 				sb.Append("<hidden>");
 			else {
-				sb.Append("(");
+				sb.Append('(');
 				sb.Append(Line);
-				sb.Append(",");
+				sb.Append(',');
 				sb.Append(Column);
 				sb.Append(")-(");
 				sb.Append(EndLine);
-				sb.Append(",");
+				sb.Append(',');
 				sb.Append(EndColumn);
-				sb.Append(")");
+				sb.Append(')');
 			}
 			sb.Append(": ");
 			sb.Append(Document.URL);

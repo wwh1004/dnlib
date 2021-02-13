@@ -93,7 +93,7 @@ namespace dnlib.DotNet.MD {
 			x.Signature == y.Signature;
 
 		public int GetHashCode(RawFieldRow obj) =>
-			(int)obj.Flags +
+			obj.Flags +
 			rol(obj.Name, 3) +
 			rol(obj.Signature, 7);
 
@@ -127,7 +127,7 @@ namespace dnlib.DotNet.MD {
 			x.Name == y.Name;
 
 		public int GetHashCode(RawParamRow obj) =>
-			(int)obj.Flags +
+			obj.Flags +
 			rol(obj.Sequence, 3) +
 			rol(obj.Name, 7);
 
@@ -156,7 +156,7 @@ namespace dnlib.DotNet.MD {
 			x.Value == y.Value;
 
 		public int GetHashCode(RawConstantRow obj) =>
-			(int)obj.Type +
+			obj.Type +
 			rol(obj.Padding, 3) +
 			rol(obj.Parent, 7) +
 			rol(obj.Value, 11);
@@ -185,7 +185,7 @@ namespace dnlib.DotNet.MD {
 			x.PermissionSet == y.PermissionSet;
 
 		public int GetHashCode(RawDeclSecurityRow obj) =>
-			(int)obj.Action +
+			obj.Action +
 			rol(obj.Parent, 3) +
 			rol(obj.PermissionSet, 7);
 
@@ -195,7 +195,7 @@ namespace dnlib.DotNet.MD {
 			x.Parent == y.Parent;
 
 		public int GetHashCode(RawClassLayoutRow obj) =>
-			(int)obj.PackingSize +
+			obj.PackingSize +
 			rol(obj.ClassSize, 3) +
 			rol(obj.Parent, 7);
 
@@ -229,7 +229,7 @@ namespace dnlib.DotNet.MD {
 			x.EventType == y.EventType;
 
 		public int GetHashCode(RawEventRow obj) =>
-			(int)obj.EventFlags +
+			obj.EventFlags +
 			rol(obj.Name, 3) +
 			rol(obj.EventType, 7);
 
@@ -251,7 +251,7 @@ namespace dnlib.DotNet.MD {
 			x.Type == y.Type;
 
 		public int GetHashCode(RawPropertyRow obj) =>
-			(int)obj.PropFlags +
+			obj.PropFlags +
 			rol(obj.Name, 3) +
 			rol(obj.Type, 7);
 
@@ -261,7 +261,7 @@ namespace dnlib.DotNet.MD {
 			x.Association == y.Association;
 
 		public int GetHashCode(RawMethodSemanticsRow obj) =>
-			(int)obj.Semantic +
+			obj.Semantic +
 			rol(obj.Method, 3) +
 			rol(obj.Association, 7);
 
@@ -290,7 +290,7 @@ namespace dnlib.DotNet.MD {
 			x.ImportScope == y.ImportScope;
 
 		public int GetHashCode(RawImplMapRow obj) =>
-			(int)obj.MappingFlags +
+			obj.MappingFlags +
 			rol(obj.MemberForwarded, 3) +
 			rol(obj.ImportName, 7) +
 			rol(obj.ImportScope, 11);
@@ -363,7 +363,7 @@ namespace dnlib.DotNet.MD {
 			x.HashValue == y.HashValue;
 
 		public int GetHashCode(RawAssemblyRefRow obj) =>
-			(int)obj.MajorVersion +
+			obj.MajorVersion +
 			rol(obj.MinorVersion, 3) +
 			rol(obj.BuildNumber, 7) +
 			rol(obj.RevisionNumber, 11) +
@@ -445,7 +445,7 @@ namespace dnlib.DotNet.MD {
 			x.Kind == y.Kind;
 
 		public int GetHashCode(RawGenericParamRow obj) =>
-			(int)obj.Number +
+			obj.Number +
 			rol(obj.Flags, 3) +
 			rol(obj.Owner, 7) +
 			rol(obj.Name, 11) +

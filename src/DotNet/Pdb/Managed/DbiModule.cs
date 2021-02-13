@@ -183,10 +183,10 @@ namespace dnlib.DotNet.Pdb.Managed {
 				const int LINE_ENTRY_SIZE = 8;
 				const int COL_ENTRY_SIZE = 4;
 				var lineTablePos = reader.Position;
-				var colTablePos = reader.Position + count * LINE_ENTRY_SIZE;
+				var colTablePos = reader.Position + (count * LINE_ENTRY_SIZE);
 
 				for (uint i = 0; i < count; i++) {
-					reader.Position = lineTablePos + i * LINE_ENTRY_SIZE;
+					reader.Position = lineTablePos + (i * LINE_ENTRY_SIZE);
 
 					var line = new SymbolSequencePoint {
 						Document = document
@@ -197,7 +197,7 @@ namespace dnlib.DotNet.Pdb.Managed {
 					line.Line = (int)(lineFlags & 0x00ffffff);
 					line.EndLine = line.Line + (int)((lineFlags >> 24) & 0x7F);
 					if ((flags & 1) != 0) {
-						reader.Position = colTablePos + i * COL_ENTRY_SIZE;
+						reader.Position = colTablePos + (i * COL_ENTRY_SIZE);
 						line.Column = reader.ReadUInt16();
 						line.EndColumn = reader.ReadUInt16();
 					}

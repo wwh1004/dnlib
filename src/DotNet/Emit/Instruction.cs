@@ -325,8 +325,7 @@ namespace dnlib.DotNet.Emit {
 				return opCode.Size;
 
 			case OperandType.InlineSwitch:
-				var targets = Operand as IList<Instruction>;
-				return opCode.Size + 4 + (targets is null ? 0 : targets.Count * 4);
+				return opCode.Size + 4 + (Operand is not IList<Instruction> targets ? 0 : targets.Count * 4);
 
 			case OperandType.InlineVar:
 				return opCode.Size + 2;

@@ -48,19 +48,18 @@ namespace dnlib.Examples {
 				Console.WriteLine("{0} (0x{1:X4})", insn, insn.OpCode.Value);
 			Console.WriteLine();
 
-			using (var stream = new MemoryStream()) {
-				mod.Write(stream);
+			using var stream = new MemoryStream();
+			mod.Write(stream);
 
-				stream.Position = 0;
+			stream.Position = 0;
 
-				mod = ModuleDefMD.Load(stream, ctx);
-				body = mod.Types.Single(x => x.Name == nameof(Example7)).Methods.Single(x => x.Name == nameof(CustomCil)).Body;
+			mod = ModuleDefMD.Load(stream, ctx);
+			body = mod.Types.Single(x => x.Name == nameof(Example7)).Methods.Single(x => x.Name == nameof(CustomCil)).Body;
 
-				Console.WriteLine("Roundtripped:");
-				foreach (var insn in body.Instructions)
-					Console.WriteLine("{0} (0x{1:X4})", insn, insn.OpCode.Value);
-				Console.WriteLine();
-			}
+			Console.WriteLine("Roundtripped:");
+			foreach (var insn in body.Instructions)
+				Console.WriteLine("{0} (0x{1:X4})", insn, insn.OpCode.Value);
+			Console.WriteLine();
 		}
 
 		void CustomCil() {

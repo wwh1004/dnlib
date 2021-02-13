@@ -108,7 +108,7 @@ namespace dnlib.PE {
 			return (FileOffset)rva;
 		}
 
-		static ulong AlignUp(ulong val, uint alignment) => (val + alignment - 1) & ~(ulong)(alignment - 1);
+		static ulong AlignUp(ulong val, uint alignment) => (val + alignment - 1) & ~(alignment - 1);
 
 		/// <summary>
 		/// Returns size of image rounded up to <see cref="IImageOptionalHeader.SectionAlignment"/>

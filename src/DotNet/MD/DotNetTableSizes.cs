@@ -42,7 +42,7 @@ namespace dnlib.DotNet.MD {
 
 		int GetSize(ColumnSize columnSize, IList<uint> rowCounts) {
 			if (ColumnSize.Module <= columnSize && columnSize <= ColumnSize.CustomDebugInformation) {
-				int table = (int)(columnSize - ColumnSize.Module);
+				int table = columnSize - ColumnSize.Module;
 				uint count = table >= rowCounts.Count ? 0 : rowCounts[table];
 				return count > 0xFFFF ? 4 : 2;
 			}

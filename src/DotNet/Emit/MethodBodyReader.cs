@@ -382,7 +382,7 @@ namespace dnlib.DotNet.Emit {
 
 				// The CLR allows the code to start inside the method header. But if it does,
 				// the CLR doesn't read any exceptions.
-				reader.Position = reader.Position - 12 + headerSize * 4U;
+				reader.Position = reader.Position - 12 + (headerSize * 4U);
 				if (headerSize < 3)
 					flags &= 0xFFF7;
 				headerSize *= 4;
@@ -403,8 +403,7 @@ namespace dnlib.DotNet.Emit {
 		/// </summary>
 		/// <returns>All locals or <c>null</c> if there are none</returns>
 		IList<TypeSig> ReadLocals() {
-			var standAloneSig = opResolver.ResolveToken(localVarSigTok, gpContext) as StandAloneSig;
-			if (standAloneSig is null)
+			if (opResolver.ResolveToken(localVarSigTok, gpContext) is not StandAloneSig standAloneSig)
 				return null;
 			var localSig = standAloneSig.LocalSig;
 			if (localSig is null)
@@ -425,8 +424,7 @@ namespace dnlib.DotNet.Emit {
 
 		/// <inheritdoc/>
 		protected override MethodSig ReadInlineSig(Instruction instr) {
-			var standAloneSig = opResolver.ResolveToken(reader.ReadUInt32(), gpContext) as StandAloneSig;
-			if (standAloneSig is null)
+			if (opResolver.ResolveToken(reader.ReadUInt32(), gpContext) is not StandAloneSig standAloneSig)
 				return null;
 			var sig = standAloneSig.MethodSig;
 			if (sig is not null)

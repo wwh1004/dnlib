@@ -276,8 +276,7 @@ namespace dnlib.DotNet {
 			if (!TryToUseMethodDefs || mdr is null)
 				return mdr;
 
-			var mr = mdr as MemberRef;
-			if (mr is null)
+			if (mdr is not MemberRef mr)
 				return mdr;
 			if (!mr.IsMethodRef)
 				return mr;
@@ -326,8 +325,7 @@ namespace dnlib.DotNet {
 		bool IsThisModule(TypeRef tr) {
 			if (tr is null)
 				return false;
-			var scopeType = tr.ScopeType.GetNonNestedTypeRefScope() as TypeRef;
-			if (scopeType is null)
+			if (tr.ScopeType.GetNonNestedTypeRefScope() is not TypeRef scopeType)
 				return false;
 
 			if (module == scopeType.ResolutionScope)
@@ -628,8 +626,7 @@ namespace dnlib.DotNet {
 				var asm = module.Context.AssemblyResolver.Resolve(origDeclType.Module.Assembly.GetName(), module);
 				if (asm is null || asm.FullName != origDeclType.Assembly.FullName)
 					throw new Exception("Couldn't resolve the correct assembly");
-				var mod = asm.FindModule(origDeclType.Module.ScopeName) as ModuleDefMD;
-				if (mod is null)
+				if (asm.FindModule(origDeclType.Module.ScopeName) is not ModuleDefMD mod)
 					throw new Exception("Couldn't resolve the correct module");
 				var fieldDef = mod.ResolveField((uint)(origField.MetadataToken & 0x00FFFFFF));
 				if (fieldDef is null)

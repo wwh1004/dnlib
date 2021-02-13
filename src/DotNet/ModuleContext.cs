@@ -77,7 +77,7 @@ namespace dnlib.DotNet {
 		public void RegisterExperimentalOpCode(OpCode opCode) {
 			byte high = (byte)((ushort)opCode.Value >> 8);
 			byte low = (byte)opCode.Value;
-			OpCode[] array = experimentalOpCodes[high - 0xF0] ??= new OpCode[256];
+			var array = experimentalOpCodes[high - 0xF0] ??= new OpCode[256];
 
 			array[low] = opCode;
 		}
@@ -86,7 +86,7 @@ namespace dnlib.DotNet {
 		/// Clears an experimental CIL opcode.
 		/// </summary>
 		public void ClearExperimentalOpCode(byte high, byte low) {
-			OpCode[] array = experimentalOpCodes[high - 0xF0];
+			var array = experimentalOpCodes[high - 0xF0];
 
 			if (array != null)
 				array[low] = null;
@@ -95,8 +95,6 @@ namespace dnlib.DotNet {
 		/// <summary>
 		/// Attempts to get an experimental CIL opcode.
 		/// </summary>
-		public OpCode GetExperimentalOpCode(byte high, byte low) {
-			return experimentalOpCodes[high - 0xF0]?[low];
-		}
+		public OpCode GetExperimentalOpCode(byte high, byte low) => experimentalOpCodes[high - 0xF0]?[low];
 	}
 }

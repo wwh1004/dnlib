@@ -43,7 +43,7 @@ namespace dnlib.DotNet.Writer {
 		/// </summary>
 		/// <param name="data">The data</param>
 		internal DataReaderChunk(ref DataReader data)
-			: this(ref data, (uint)data.Length) {
+			: this(ref data, data.Length) {
 		}
 
 		/// <summary>
@@ -81,7 +81,7 @@ namespace dnlib.DotNet.Writer {
 		}
 
 		/// <inheritdoc/>
-		public uint GetFileLength() => (uint)data.Length;
+		public uint GetFileLength() => data.Length;
 
 		/// <inheritdoc/>
 		public uint GetVirtualSize() => virtualSize;

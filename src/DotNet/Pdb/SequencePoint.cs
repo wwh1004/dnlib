@@ -37,14 +37,12 @@ namespace dnlib.DotNet.Pdb {
 		/// Clones this instance
 		/// </summary>
 		/// <returns>A new cloned instance</returns>
-		public SequencePoint Clone() {
-			return new SequencePoint() {
-				Document = Document,
-				StartLine = StartLine,
-				StartColumn = StartColumn,
-				EndLine = EndLine,
-				EndColumn = EndColumn,
-			};
-		}
+		public SequencePoint Clone() => new SequencePoint() {
+			Document = Document,
+			StartLine = StartLine,
+			StartColumn = StartColumn,
+			EndLine = EndLine,
+			EndColumn = EndColumn,
+		};
 	}
 }

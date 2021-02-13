@@ -73,8 +73,7 @@ namespace dnlib.DotNet {
 		}
 
 		void LoadAllTables() {
-			var resolver = module as ITokenResolver;
-			if (resolver is null)
+			if (module is not ITokenResolver resolver)
 				return;
 			for (Table tbl = 0; tbl <= Table.GenericParamConstraint; tbl++) {
 				for (uint rid = 1; ; rid++) {
@@ -638,8 +637,8 @@ namespace dnlib.DotNet {
 		}
 
 		void AddCAValue(object obj) {
-			if (obj is CAArgument) {
-				Load((CAArgument)obj);
+			if (obj is CAArgument arg) {
+				Load(arg);
 				return;
 			}
 

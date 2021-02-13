@@ -32,17 +32,15 @@ namespace dnlib.DotNet.Writer {
 		/// <param name="typeSig">The type</param>
 		/// <returns>The signature as a byte array</returns>
 		public static byte[] Write(ISignatureWriterHelper helper, TypeSig typeSig) {
-			using (var writer = new SignatureWriter(helper)) {
-				writer.Write(typeSig);
-				return writer.GetResult();
-			}
+			using var writer = new SignatureWriter(helper);
+			writer.Write(typeSig);
+			return writer.GetResult();
 		}
 
 		internal static byte[] Write(ISignatureWriterHelper helper, TypeSig typeSig, DataWriterContext context) {
-			using (var writer = new SignatureWriter(helper, context)) {
-				writer.Write(typeSig);
-				return writer.GetResult();
-			}
+			using var writer = new SignatureWriter(helper, context);
+			writer.Write(typeSig);
+			return writer.GetResult();
 		}
 
 		/// <summary>
@@ -52,17 +50,15 @@ namespace dnlib.DotNet.Writer {
 		/// <param name="sig">The signature</param>
 		/// <returns>The signature as a byte array</returns>
 		public static byte[] Write(ISignatureWriterHelper helper, CallingConventionSig sig) {
-			using (var writer = new SignatureWriter(helper)) {
-				writer.Write(sig);
-				return writer.GetResult();
-			}
+			using var writer = new SignatureWriter(helper);
+			writer.Write(sig);
+			return writer.GetResult();
 		}
 
 		internal static byte[] Write(ISignatureWriterHelper helper, CallingConventionSig sig, DataWriterContext context) {
-			using (var writer = new SignatureWriter(helper, context)) {
-				writer.Write(sig);
-				return writer.GetResult();
-			}
+			using var writer = new SignatureWriter(helper, context);
+			writer.Write(sig);
+			return writer.GetResult();
 		}
 
 		SignatureWriter(ISignatureWriterHelper helper) {

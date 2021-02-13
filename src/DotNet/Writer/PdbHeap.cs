@@ -77,7 +77,7 @@ namespace dnlib.DotNet.Writer {
 		public override uint GetRawLength() {
 			if (!referencedTypeSystemTablesInitd)
 				throw new InvalidOperationException("ReferencedTypeSystemTables hasn't been initialized yet");
-			return (uint)(pdbId.Length + 4 + 8 + 4 * typeSystemTablesCount);
+			return (uint)(pdbId.Length + 4 + 8 + (4 * typeSystemTablesCount));
 		}
 
 		/// <inheritdoc/>

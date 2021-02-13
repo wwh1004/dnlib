@@ -119,7 +119,7 @@ namespace dnlib.DotNet.Writer {
 
 			// ImportLookupTable
 			if (is64bit) {
-				writer.WriteUInt64((ulong)(uint)corXxxMainRVA);
+				writer.WriteUInt64((uint)corXxxMainRVA);
 				writer.WriteUInt64(0);
 			}
 			else {

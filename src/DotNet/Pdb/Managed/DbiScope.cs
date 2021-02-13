@@ -176,8 +176,7 @@ namespace dnlib.DotNet.Pdb.Managed {
 			for (int i = 0; i < res.Length; i++) {
 				var info = constants[i];
 				TypeSig signature;
-				var saSig = module.ResolveToken(info.SignatureToken, gpContext) as StandAloneSig;
-				var fieldSig = saSig is null ? null : saSig.Signature as FieldSig;
+				var fieldSig = module.ResolveToken(info.SignatureToken, gpContext) is not StandAloneSig saSig ? null : saSig.Signature as FieldSig;
 				if (fieldSig is null) {
 					Debug.Fail("Constant without a signature");
 					signature = null;

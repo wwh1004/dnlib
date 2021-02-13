@@ -287,7 +287,7 @@ namespace dnlib.DotNet.Writer {
 		/// Creates the PE header "section"
 		/// </summary>
 		DataReaderChunk CreateHeaderSection(out IChunk extraHeaderData) {
-			uint afterLastSectHeader = GetOffsetAfterLastSectionHeader() + (uint)sections.Count * 0x28;
+			uint afterLastSectHeader = GetOffsetAfterLastSectionHeader() + ((uint)sections.Count * 0x28);
 			uint firstRawOffset = Math.Min(GetFirstRawDataFileOffset(), peImage.ImageNTHeaders.OptionalHeader.SectionAlignment);
 			uint headerLen = afterLastSectHeader;
 			if (firstRawOffset > headerLen)
@@ -544,7 +544,7 @@ namespace dnlib.DotNet.Writer {
 			long fileHeaderOffset = destStreamBaseOffset + (long)peImage.ImageNTHeaders.FileHeader.StartOffset;
 			long optionalHeaderOffset = destStreamBaseOffset + (long)peImage.ImageNTHeaders.OptionalHeader.StartOffset;
 			long sectionsOffset = destStreamBaseOffset + (long)peImage.ImageSectionHeaders[0].StartOffset;
-			long dataDirOffset = destStreamBaseOffset + (long)peImage.ImageNTHeaders.OptionalHeader.EndOffset - 16 * 8;
+			long dataDirOffset = destStreamBaseOffset + (long)peImage.ImageNTHeaders.OptionalHeader.EndOffset - (16 * 8);
 			long cor20Offset = destStreamBaseOffset + (long)imageCor20Header.FileOffset;
 
 			// Update PE file header
@@ -627,20 +627,20 @@ namespace dnlib.DotNet.Writer {
 
 			// Update Win32 resources data directory, if we wrote a new one
 			if (win32Resources is not null) {
-				writer.Position = dataDirOffset + 2 * 8;
+				writer.Position = dataDirOffset + (2 * 8);
 				writer.WriteDataDirectory(win32Resources);
 			}
 
 			// Clear the security descriptor directory
-			writer.Position = dataDirOffset + 4 * 8;
+			writer.Position = dataDirOffset + (4 * 8);
 			writer.WriteDataDirectory(null);
 
 			// Write a new debug directory
-			writer.Position = dataDirOffset + 6 * 8;
+			writer.Position = dataDirOffset + (6 * 8);
 			writer.WriteDebugDirectory(debugDirectory);
 
 			// Write a new Metadata data directory
-			writer.Position = dataDirOffset + 14 * 8;
+			writer.Position = dataDirOffset + (14 * 8);
 			writer.WriteDataDirectory(imageCor20Header);
 
 			// Update old sections, and add new sections

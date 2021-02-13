@@ -285,7 +285,7 @@ namespace dnlib.DotNet.Writer {
 				dirDict[dir] = rsrcOffset;
 				if (dir != dirList[0])
 					AddString(dir.Name);
-				rsrcOffset += 16 + (uint)(dir.Directories.Count + dir.Data.Count) * 8;
+				rsrcOffset += 16 + ((uint)(dir.Directories.Count + dir.Data.Count) * 8);
 			}
 
 			foreach (var data in dataHeaderList) {
@@ -432,7 +432,7 @@ namespace dnlib.DotNet.Writer {
 				writer.WriteUInt32(GetDirectoryEntryOffset(d));
 			}
 
-			return 16 + (uint)(named.Count + ids.Count) * 8;
+			return 16 + ((uint)(named.Count + ids.Count) * 8);
 		}
 
 		uint GetDirectoryEntryOffset(ResourceDirectoryEntry e) {
@@ -466,7 +466,7 @@ namespace dnlib.DotNet.Writer {
 
 		uint WriteTo(DataWriter writer, ResourceData dataHeader) {
 			writer.WriteUInt32((uint)rva + dataDict[dataHeader]);
-			writer.WriteUInt32((uint)dataHeader.CreateReader().Length);
+			writer.WriteUInt32(dataHeader.CreateReader().Length);
 			writer.WriteUInt32(dataHeader.CodePage);
 			writer.WriteUInt32(dataHeader.Reserved);
 			return 16;

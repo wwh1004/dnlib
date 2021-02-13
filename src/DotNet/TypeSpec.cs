@@ -323,7 +323,7 @@ namespace dnlib.DotNet {
 		public TypeSpecMD(ModuleDefMD readerModule, uint rid, GenericParamContext gpContext) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.TypeSpecTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"TypeSpec rid {rid} does not exist");
 #endif

@@ -596,8 +596,7 @@ namespace dnlib.DotNet {
 					baseNamespace = baseTr.Namespace;
 				}
 				else {
-					var baseTd = baseType as TypeDef;
-					if (baseTd is null)
+					if (baseType is not TypeDef baseTd)
 						return false;
 					baseName = baseTd.Name;
 					baseNamespace = baseTd.Namespace;
@@ -1855,8 +1854,7 @@ namespace dnlib.DotNet {
 				return md;
 
 			// Must be a member ref
-			var mr = mdr as MemberRef;
-			if (mr is null)
+			if (mdr is not MemberRef mr)
 				return null;
 
 			// If Class is MethodDef, then it should be a vararg method
@@ -1867,12 +1865,10 @@ namespace dnlib.DotNet {
 
 			// If it's a TypeSpec, it must be a generic instance type
 			for (int i = 0; i < 10; i++) {
-				var ts = parent as TypeSpec;
-				if (ts is null)
+				if (parent is not TypeSpec ts)
 					break;
 
-				var gis = ts.TypeSig as GenericInstSig;
-				if (gis is null || gis.GenericType is null)
+				if (ts.TypeSig is not GenericInstSig gis || gis.GenericType is null)
 					return null;
 				parent = gis.GenericType.TypeDefOrRef;
 			}
@@ -2068,7 +2064,7 @@ namespace dnlib.DotNet {
 		public TypeDefMD(ModuleDefMD readerModule, uint rid) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.TypeDefTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"TypeDef rid {rid} does not exist");
 #endif

@@ -230,8 +230,8 @@ namespace dnlib.DotNet.Writer {
 		/// <param name="writer">Instruction writer</param>
 		/// <param name="instr">Instruction</param>
 		protected virtual void WriteInlineI(ref ArrayWriter writer, Instruction instr) {
-			if (instr.Operand is int)
-				writer.WriteInt32((int)instr.Operand);
+			if (instr.Operand is int i)
+				writer.WriteInt32(i);
 			else {
 				Error("Operand is not an Int32");
 				writer.WriteInt32(0);
@@ -244,8 +244,8 @@ namespace dnlib.DotNet.Writer {
 		/// <param name="writer">Instruction writer</param>
 		/// <param name="instr">Instruction</param>
 		protected virtual void WriteInlineI8(ref ArrayWriter writer, Instruction instr) {
-			if (instr.Operand is long)
-				writer.WriteInt64((long)instr.Operand);
+			if (instr.Operand is long l)
+				writer.WriteInt64(l);
 			else {
 				Error("Operand is not an Int64");
 				writer.WriteInt64(0);
@@ -281,8 +281,8 @@ namespace dnlib.DotNet.Writer {
 		/// <param name="writer">Instruction writer</param>
 		/// <param name="instr">Instruction</param>
 		protected virtual void WriteInlineR(ref ArrayWriter writer, Instruction instr) {
-			if (instr.Operand is double)
-				writer.WriteDouble((double)instr.Operand);
+			if (instr.Operand is double d)
+				writer.WriteDouble(d);
 			else {
 				Error("Operand is not a Double");
 				writer.WriteDouble(0);
@@ -309,13 +309,12 @@ namespace dnlib.DotNet.Writer {
 		/// <param name="writer">Instruction writer</param>
 		/// <param name="instr">Instruction</param>
 		protected virtual void WriteInlineSwitch(ref ArrayWriter writer, Instruction instr) {
-			var targets = instr.Operand as IList<Instruction>;
-			if (targets is null) {
+			if (instr.Operand is not IList<Instruction> targets) {
 				Error("switch operand is not a list of instructions");
 				writer.WriteInt32(0);
 			}
 			else {
-				uint offsetAfter = (uint)(ToInstructionOffset(ref writer) + 4 + targets.Count * 4);
+				uint offsetAfter = (uint)(ToInstructionOffset(ref writer) + 4 + (targets.Count * 4));
 				writer.WriteInt32(targets.Count);
 				for (int i = 0; i < targets.Count; i++) {
 					var target = targets[i];
@@ -344,8 +343,7 @@ namespace dnlib.DotNet.Writer {
 		/// <param name="writer">Instruction writer</param>
 		/// <param name="instr">Instruction</param>
 		protected virtual void WriteInlineVar(ref ArrayWriter writer, Instruction instr) {
-			var variable = instr.Operand as IVariable;
-			if (variable is null) {
+			if (instr.Operand is not IVariable variable) {
 				Error("Operand is not a local/arg");
 				writer.WriteUInt16(0);
 			}
@@ -381,10 +379,10 @@ namespace dnlib.DotNet.Writer {
 		/// <param name="writer">Instruction writer</param>
 		/// <param name="instr">Instruction</param>
 		protected virtual void WriteShortInlineI(ref ArrayWriter writer, Instruction instr) {
-			if (instr.Operand is sbyte)
-				writer.WriteSByte((sbyte)instr.Operand);
-			else if (instr.Operand is byte)
-				writer.WriteByte((byte)instr.Operand);
+			if (instr.Operand is sbyte sb)
+				writer.WriteSByte(sb);
+			else if (instr.Operand is byte b)
+				writer.WriteByte(b);
 			else {
 				Error("Operand is not a Byte or a SByte");
 				writer.WriteByte(0);
@@ -397,8 +395,8 @@ namespace dnlib.DotNet.Writer {
 		/// <param name="writer">Instruction writer</param>
 		/// <param name="instr">Instruction</param>
 		protected virtual void WriteShortInlineR(ref ArrayWriter writer, Instruction instr) {
-			if (instr.Operand is float)
-				writer.WriteSingle((float)instr.Operand);
+			if (instr.Operand is float f)
+				writer.WriteSingle(f);
 			else {
 				Error("Operand is not a Single");
 				writer.WriteSingle(0);
@@ -411,8 +409,7 @@ namespace dnlib.DotNet.Writer {
 		/// <param name="writer">Instruction writer</param>
 		/// <param name="instr">Instruction</param>
 		protected virtual void WriteShortInlineVar(ref ArrayWriter writer, Instruction instr) {
-			var variable = instr.Operand as IVariable;
-			if (variable is null) {
+			if (instr.Operand is not IVariable variable) {
 				Error("Operand is not a local/arg");
 				writer.WriteByte(0);
 			}

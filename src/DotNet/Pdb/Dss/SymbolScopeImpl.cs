@@ -86,8 +86,7 @@ namespace dnlib.DotNet.Pdb.Dss {
 		public override PdbImportScope ImportScope => null;
 
 		public override IList<PdbConstant> GetConstants(ModuleDef module, GenericParamContext gpContext) {
-			var scope2 = scope as ISymUnmanagedScope2;
-			if (scope2 is null)
+			if (scope is not ISymUnmanagedScope2 scope2)
 				return Array2.Empty<PdbConstant>();
 			scope2.GetConstants(0, out uint numCs, null);
 			if (numCs == 0)

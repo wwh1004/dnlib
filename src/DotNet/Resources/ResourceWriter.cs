@@ -103,14 +103,13 @@ namespace dnlib.DotNet.Resources {
 		static uint Hash(string key) {
 			uint val = 0x1505;
 			foreach (var c in key)
-				val = ((val << 5) + val) ^ (uint)c;
+				val = ((val << 5) + val) ^ c;
 			return val;
 		}
 
 		void InitializeUserTypes() {
 			foreach (var resource in resources.ResourceElements) {
-				var data = resource.ResourceData as UserResourceData;
-				if (data is null)
+				if (resource.ResourceData is not UserResourceData data)
 					continue;
 				var newType = typeCreator.CreateUserResourceType(data.TypeName);
 				dataToNewType[data] = newType;

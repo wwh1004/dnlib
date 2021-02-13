@@ -68,12 +68,7 @@ namespace dnlib.DotNet {
 		bool IIsTypeOrMethod.IsType => true;
 
 		/// <inheritdoc/>
-		int IGenericParameterProvider.NumberOfGenericParameters {
-			get {
-				var type = this.RemovePinnedAndModifiers() as GenericInstSig;
-				return type is null ? 0 : type.GenericArguments.Count;
-			}
-		}
+		int IGenericParameterProvider.NumberOfGenericParameters => this.RemovePinnedAndModifiers() is not GenericInstSig type ? 0 : type.GenericArguments.Count;
 
 		/// <inheritdoc/>
 		public bool IsValueType {
@@ -258,8 +253,7 @@ namespace dnlib.DotNet {
 			if (a is null)
 				return null;
 			while (true) {
-				var modifier = a as ModifierSig;
-				if (modifier is null)
+				if (a is not ModifierSig modifier)
 					return a;
 				a = a.Next;
 			}
@@ -271,8 +265,7 @@ namespace dnlib.DotNet {
 		/// <param name="a">The type</param>
 		/// <returns>Input after pinned signature</returns>
 		public static TypeSig RemovePinned(this TypeSig a) {
-			var pinned = a as PinnedSig;
-			if (pinned is null)
+			if (a is not PinnedSig pinned)
 				return a;
 			return pinned.Next;
 		}
@@ -398,7 +391,7 @@ namespace dnlib.DotNet {
 		/// </summary>
 		/// <param name="self">this</param>
 		/// <returns></returns>
-		public static bool GetIsValueType(this TypeSig self) => self is null ? false : self.IsValueType;
+		public static bool GetIsValueType(this TypeSig self) => self is not null && self.IsValueType;
 
 		/// <summary>
 		/// Gets the <see cref="TypeSig.IsPrimitive"/> value or <c>false</c> if
@@ -406,7 +399,7 @@ namespace dnlib.DotNet {
 		/// </summary>
 		/// <param name="self">this</param>
 		/// <returns></returns>
-		public static bool GetIsPrimitive(this TypeSig self) => self is null ? false : self.IsPrimitive;
+		public static bool GetIsPrimitive(this TypeSig self) => self is not null && self.IsPrimitive;
 
 		/// <summary>
 		/// Gets the element type

@@ -65,14 +65,14 @@ namespace dnlib.DotNet.Writer {
 				if (page != prevPage) {
 					prevPage = page;
 					if (pageList is not null)
-						totalSize += (uint)(8 + ((pageList.Count + 1) & ~1) * 2);
+						totalSize += (uint)(8 + (((pageList.Count + 1) & ~1) * 2));
 					pageList = new List<uint>();
 					relocSections.Add(pageList);
 				}
 				pageList.Add(relocRva);
 			}
 			if (pageList is not null)
-				totalSize += (uint)(8 + ((pageList.Count + 1) & ~1) * 2);
+				totalSize += (uint)(8 + (((pageList.Count + 1) & ~1) * 2));
 		}
 
 		/// <inheritdoc/>
@@ -88,7 +88,7 @@ namespace dnlib.DotNet.Writer {
 			uint relocType = is64bit ? 0xA000U : 0x3000;
 			foreach (var pageList in relocSections) {
 				writer.WriteUInt32(pageList[0] & ~0xFFFU);
-				writer.WriteUInt32((uint)(8 + ((pageList.Count + 1) & ~1) * 2));
+				writer.WriteUInt32((uint)(8 + (((pageList.Count + 1) & ~1) * 2)));
 				foreach (var rva in pageList)
 					writer.WriteUInt16((ushort)(relocType | (rva & 0xFFF)));
 				if ((pageList.Count & 1) != 0)

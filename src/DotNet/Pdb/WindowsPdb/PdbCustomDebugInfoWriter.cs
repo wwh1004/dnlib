@@ -131,8 +131,7 @@ namespace dnlib.DotNet.Pdb.WindowsPdb {
 				uint token;
 				switch (info.Kind) {
 				case PdbCustomDebugInfoKind.UsingGroups:
-					var usingRec = info as PdbUsingGroupsCustomDebugInfo;
-					if (usingRec is null) {
+					if (info is not PdbUsingGroupsCustomDebugInfo usingRec) {
 						Error("Unsupported custom debug info type {0}", info.GetType());
 						return null;
 					}
@@ -147,8 +146,7 @@ namespace dnlib.DotNet.Pdb.WindowsPdb {
 					break;
 
 				case PdbCustomDebugInfoKind.ForwardMethodInfo:
-					var fwdMethodRec = info as PdbForwardMethodInfoCustomDebugInfo;
-					if (fwdMethodRec is null) {
+					if (info is not PdbForwardMethodInfoCustomDebugInfo fwdMethodRec) {
 						Error("Unsupported custom debug info type {0}", info.GetType());
 						return null;
 					}
@@ -159,8 +157,7 @@ namespace dnlib.DotNet.Pdb.WindowsPdb {
 					break;
 
 				case PdbCustomDebugInfoKind.ForwardModuleInfo:
-					var fwdModRec = info as PdbForwardModuleInfoCustomDebugInfo;
-					if (fwdModRec is null) {
+					if (info is not PdbForwardModuleInfoCustomDebugInfo fwdModRec) {
 						Error("Unsupported custom debug info type {0}", info.GetType());
 						return null;
 					}
@@ -171,8 +168,7 @@ namespace dnlib.DotNet.Pdb.WindowsPdb {
 					break;
 
 				case PdbCustomDebugInfoKind.StateMachineHoistedLocalScopes:
-					var smLocalScopesRec = info as PdbStateMachineHoistedLocalScopesCustomDebugInfo;
-					if (smLocalScopesRec is null) {
+					if (info is not PdbStateMachineHoistedLocalScopesCustomDebugInfo smLocalScopesRec) {
 						Error("Unsupported custom debug info type {0}", info.GetType());
 						return null;
 					}
@@ -192,8 +188,7 @@ namespace dnlib.DotNet.Pdb.WindowsPdb {
 					break;
 
 				case PdbCustomDebugInfoKind.StateMachineTypeName:
-					var smTypeRec = info as PdbStateMachineTypeNameCustomDebugInfo;
-					if (smTypeRec is null) {
+					if (info is not PdbStateMachineTypeNameCustomDebugInfo smTypeRec) {
 						Error("Unsupported custom debug info type {0}", info.GetType());
 						return null;
 					}
@@ -206,8 +201,7 @@ namespace dnlib.DotNet.Pdb.WindowsPdb {
 					break;
 
 				case PdbCustomDebugInfoKind.DynamicLocals:
-					var dynLocListRec = info as PdbDynamicLocalsCustomDebugInfo;
-					if (dynLocListRec is null) {
+					if (info is not PdbDynamicLocalsCustomDebugInfo dynLocListRec) {
 						Error("Unsupported custom debug info type {0}", info.GetType());
 						return null;
 					}
@@ -254,8 +248,7 @@ namespace dnlib.DotNet.Pdb.WindowsPdb {
 					break;
 
 				case PdbCustomDebugInfoKind.EditAndContinueLocalSlotMap:
-					var encLocalMapRec = info as PdbEditAndContinueLocalSlotMapCustomDebugInfo;
-					if (encLocalMapRec is null) {
+					if (info is not PdbEditAndContinueLocalSlotMapCustomDebugInfo encLocalMapRec) {
 						Error("Unsupported custom debug info type {0}", info.GetType());
 						return null;
 					}
@@ -263,8 +256,7 @@ namespace dnlib.DotNet.Pdb.WindowsPdb {
 					break;
 
 				case PdbCustomDebugInfoKind.EditAndContinueLambdaMap:
-					var encLambdaRec = info as PdbEditAndContinueLambdaMapCustomDebugInfo;
-					if (encLambdaRec is null) {
+					if (info is not PdbEditAndContinueLambdaMapCustomDebugInfo encLambdaRec) {
 						Error("Unsupported custom debug info type {0}", info.GetType());
 						return null;
 					}
@@ -272,8 +264,7 @@ namespace dnlib.DotNet.Pdb.WindowsPdb {
 					break;
 
 				case PdbCustomDebugInfoKind.TupleElementNames:
-					var tupleListRec = info as PdbTupleElementNamesCustomDebugInfo;
-					if (tupleListRec is null) {
+					if (info is not PdbTupleElementNamesCustomDebugInfo tupleListRec) {
 						Error("Unsupported custom debug info type {0}", info.GetType());
 						return null;
 					}
@@ -303,8 +294,7 @@ namespace dnlib.DotNet.Pdb.WindowsPdb {
 					break;
 
 				default:
-					var unkRec = info as PdbUnknownCustomDebugInfo;
-					if (unkRec is null) {
+					if (info is not PdbUnknownCustomDebugInfo unkRec) {
 						Error("Unsupported custom debug info class {0}", info.GetType());
 						return null;
 					}

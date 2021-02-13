@@ -56,18 +56,17 @@ namespace dnlib.DotNet.Writer {
 
 		public static byte[] Hash(ChecksumAlgorithm checksumAlgorithm, Stream stream, long length) {
 			var buffer = new byte[(int)Math.Min(0x2000, length)];
-			using (var hasher = CreateHasher(checksumAlgorithm)) {
-				while (length > 0) {
-					int len = (int)Math.Min(length, buffer.Length);
-					int read = stream.Read(buffer, 0, len);
-					if (read == 0)
-						throw new InvalidOperationException("Couldn't read all bytes");
-					hasher.TransformBlock(buffer, 0, read, buffer, 0);
-					length -= read;
-				}
-				hasher.TransformFinalBlock(Array2.Empty<byte>(), 0, 0);
-				return hasher.Hash;
+			using var hasher = CreateHasher(checksumAlgorithm);
+			while (length > 0) {
+				int len = (int)Math.Min(length, buffer.Length);
+				int read = stream.Read(buffer, 0, len);
+				if (read == 0)
+					throw new InvalidOperationException("Couldn't read all bytes");
+				hasher.TransformBlock(buffer, 0, read, buffer, 0);
+				length -= read;
 			}
+			hasher.TransformFinalBlock(Array2.Empty<byte>(), 0, 0);
+			return hasher.Hash;
 		}
 	}
 }

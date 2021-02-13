@@ -54,7 +54,7 @@ namespace dnlib.DotNet.Pdb.Dss {
 			int len = (int)Math.Min((uint)name.Length + 1, cchMethod);
 			if (szMethod is not null) {
 				for (int i = 0; i < len - 1; i++, szMethod++)
-					*szMethod = (ushort)name[i];
+					*szMethod = name[i];
 				if (len > 0)
 					*szMethod = 0;
 			}

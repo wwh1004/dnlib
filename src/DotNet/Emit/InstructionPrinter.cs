@@ -92,8 +92,7 @@ namespace dnlib.DotNet.Emit {
 				break;
 
 			case OperandType.InlineSwitch:
-				var targets = op as IList<Instruction>;
-				if (targets is null)
+				if (op is not IList<Instruction> targets)
 					sb.Append("null");
 				else {
 					sb.Append('(');
@@ -139,7 +138,7 @@ namespace dnlib.DotNet.Emit {
 				sb.Append('"');
 
 			foreach (var c in s) {
-				if ((int)c < 0x20) {
+				if (c < 0x20) {
 					switch (c) {
 					case '\a': sb.Append(@"\a"); break;
 					case '\b': sb.Append(@"\b"); break;

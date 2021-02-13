@@ -227,8 +227,7 @@ namespace dnlib.DotNet {
 
 		/// <inheritdoc/>
 		public override bool Equals(object obj) {
-			var other = obj as UTF8String;
-			if (other is null)
+			if (obj is not UTF8String other)
 				return false;
 			return CompareTo(this, other) == 0;
 		}

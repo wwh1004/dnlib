@@ -321,7 +321,7 @@ namespace dnlib.DotNet.Writer {
 				if (type is null)
 					continue;
 				types.Add(type);
-				uint val = (uint)index++;
+				uint val = index++;
 				if (type.GetType() == typeof(TypeDefMD))
 					val |= IS_TYPEDEFMD;
 				typeToIndex[type] = val;

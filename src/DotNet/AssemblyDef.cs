@@ -911,8 +911,7 @@ namespace dnlib.DotNet {
 				var ca = CustomAttributeReader.Read(readerModule, caType, caRow.Value, gpContext);
 				if (ca is null || ca.ConstructorArguments.Count != 1)
 					continue;
-				var s = ca.ConstructorArguments[0].Value as UTF8String;
-				if (s is null)
+				if (ca.ConstructorArguments[0].Value is not UTF8String s)
 					continue;
 				if (TryCreateTargetFrameworkInfo(s, out var tmpFramework, out var tmpVersion, out var tmpProfile)) {
 					tfaFramework = tmpFramework;
@@ -1030,7 +1029,7 @@ namespace dnlib.DotNet {
 		public AssemblyDefMD(ModuleDefMD readerModule, uint rid) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.AssemblyTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"Assembly rid {rid} does not exist");
 #endif

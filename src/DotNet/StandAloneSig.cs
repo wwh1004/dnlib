@@ -161,7 +161,7 @@ namespace dnlib.DotNet {
 		public StandAloneSigMD(ModuleDefMD readerModule, uint rid, GenericParamContext gpContext) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.StandAloneSigTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"StandAloneSig rid {rid} does not exist");
 #endif

@@ -45,8 +45,7 @@ namespace dnlib.DotNet {
 				if (number >= args.Count)
 					return null;
 				var typeSig = args[(int)number];
-				var gvar = typeSig as GenericSig;
-				if (gvar is null || gvar.IsTypeVar != isTypeVar)
+				if (typeSig is not GenericSig gvar || gvar.IsTypeVar != isTypeVar)
 					return typeSig;
 				result = gvar;
 				number = gvar.Number;

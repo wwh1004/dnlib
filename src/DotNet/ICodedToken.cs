@@ -214,12 +214,12 @@ namespace dnlib.DotNet {
 
 			var td = type as TypeDef;
 			if (td is not null)
-				return CreateClassOrValueType(type, checkValueType ? td.IsValueType : false);
+				return CreateClassOrValueType(type, checkValueType && td.IsValueType);
 
 			if (type is TypeRef tr) {
 				if (checkValueType)
 					td = tr.Resolve();
-				return CreateClassOrValueType(type, td is null ? false : td.IsValueType);
+				return CreateClassOrValueType(type, td is not null && td.IsValueType);
 			}
 
 			if (type is TypeSpec ts)
@@ -240,10 +240,7 @@ namespace dnlib.DotNet {
 		/// <param name="type">The type</param>
 		/// <returns>A <see cref="TypeDefOrRefSig"/> or <c>null</c> if it's not a
 		/// <see cref="TypeDefOrRefSig"/></returns>
-		public static TypeDefOrRefSig TryGetTypeDefOrRefSig(this ITypeDefOrRef type) {
-			var ts = type as TypeSpec;
-			return ts is null ? null : ts.TypeSig.RemovePinnedAndModifiers() as TypeDefOrRefSig;
-		}
+		public static TypeDefOrRefSig TryGetTypeDefOrRefSig(this ITypeDefOrRef type) => type is not TypeSpec ts ? null : ts.TypeSig.RemovePinnedAndModifiers() as TypeDefOrRefSig;
 
 		/// <summary>
 		/// Returns a <see cref="ClassOrValueTypeSig"/>
@@ -251,10 +248,7 @@ namespace dnlib.DotNet {
 		/// <param name="type">The type</param>
 		/// <returns>A <see cref="ClassOrValueTypeSig"/> or <c>null</c> if it's not a
 		/// <see cref="ClassOrValueTypeSig"/></returns>
-		public static ClassOrValueTypeSig TryGetClassOrValueTypeSig(this ITypeDefOrRef type) {
-			var ts = type as TypeSpec;
-			return ts is null ? null : ts.TypeSig.RemovePinnedAndModifiers() as ClassOrValueTypeSig;
-		}
+		public static ClassOrValueTypeSig TryGetClassOrValueTypeSig(this ITypeDefOrRef type) => type is not TypeSpec ts ? null : ts.TypeSig.RemovePinnedAndModifiers() as ClassOrValueTypeSig;
 
 		/// <summary>
 		/// Returns a <see cref="ValueTypeSig"/>
@@ -262,10 +256,7 @@ namespace dnlib.DotNet {
 		/// <param name="type">The type</param>
 		/// <returns>A <see cref="ValueTypeSig"/> or <c>null</c> if it's not a
 		/// <see cref="ValueTypeSig"/></returns>
-		public static ValueTypeSig TryGetValueTypeSig(this ITypeDefOrRef type) {
-			var ts = type as TypeSpec;
-			return ts is null ? null : ts.TypeSig.RemovePinnedAndModifiers() as ValueTypeSig;
-		}
+		public static ValueTypeSig TryGetValueTypeSig(this ITypeDefOrRef type) => type is not TypeSpec ts ? null : ts.TypeSig.RemovePinnedAndModifiers() as ValueTypeSig;
 
 		/// <summary>
 		/// Returns a <see cref="ClassSig"/>
@@ -273,10 +264,7 @@ namespace dnlib.DotNet {
 		/// <param name="type">The type</param>
 		/// <returns>A <see cref="ClassSig"/> or <c>null</c> if it's not a
 		/// <see cref="ClassSig"/></returns>
-		public static ClassSig TryGetClassSig(this ITypeDefOrRef type) {
-			var ts = type as TypeSpec;
-			return ts is null ? null : ts.TypeSig.RemovePinnedAndModifiers() as ClassSig;
-		}
+		public static ClassSig TryGetClassSig(this ITypeDefOrRef type) => type is not TypeSpec ts ? null : ts.TypeSig.RemovePinnedAndModifiers() as ClassSig;
 
 		/// <summary>
 		/// Returns a <see cref="GenericSig"/>
@@ -284,10 +272,7 @@ namespace dnlib.DotNet {
 		/// <param name="type">The type</param>
 		/// <returns>A <see cref="GenericSig"/> or <c>null</c> if it's not a
 		/// <see cref="GenericSig"/></returns>
-		public static GenericSig TryGetGenericSig(this ITypeDefOrRef type) {
-			var ts = type as TypeSpec;
-			return ts is null ? null : ts.TypeSig.RemovePinnedAndModifiers() as GenericSig;
-		}
+		public static GenericSig TryGetGenericSig(this ITypeDefOrRef type) => type is not TypeSpec ts ? null : ts.TypeSig.RemovePinnedAndModifiers() as GenericSig;
 
 		/// <summary>
 		/// Returns a <see cref="GenericVar"/>
@@ -295,10 +280,7 @@ namespace dnlib.DotNet {
 		/// <param name="type">The type</param>
 		/// <returns>A <see cref="GenericVar"/> or <c>null</c> if it's not a
 		/// <see cref="GenericVar"/></returns>
-		public static GenericVar TryGetGenericVar(this ITypeDefOrRef type) {
-			var ts = type as TypeSpec;
-			return ts is null ? null : ts.TypeSig.RemovePinnedAndModifiers() as GenericVar;
-		}
+		public static GenericVar TryGetGenericVar(this ITypeDefOrRef type) => type is not TypeSpec ts ? null : ts.TypeSig.RemovePinnedAndModifiers() as GenericVar;
 
 		/// <summary>
 		/// Returns a <see cref="GenericMVar"/>
@@ -306,10 +288,7 @@ namespace dnlib.DotNet {
 		/// <param name="type">The type</param>
 		/// <returns>A <see cref="GenericMVar"/> or <c>null</c> if it's not a
 		/// <see cref="GenericMVar"/></returns>
-		public static GenericMVar TryGetGenericMVar(this ITypeDefOrRef type) {
-			var ts = type as TypeSpec;
-			return ts is null ? null : ts.TypeSig.RemovePinnedAndModifiers() as GenericMVar;
-		}
+		public static GenericMVar TryGetGenericMVar(this ITypeDefOrRef type) => type is not TypeSpec ts ? null : ts.TypeSig.RemovePinnedAndModifiers() as GenericMVar;
 
 		/// <summary>
 		/// Returns a <see cref="GenericInstSig"/>
@@ -317,10 +296,7 @@ namespace dnlib.DotNet {
 		/// <param name="type">The type</param>
 		/// <returns>A <see cref="GenericInstSig"/> or <c>null</c> if it's not a
 		/// <see cref="GenericInstSig"/></returns>
-		public static GenericInstSig TryGetGenericInstSig(this ITypeDefOrRef type) {
-			var ts = type as TypeSpec;
-			return ts is null ? null : ts.TypeSig.RemovePinnedAndModifiers() as GenericInstSig;
-		}
+		public static GenericInstSig TryGetGenericInstSig(this ITypeDefOrRef type) => type is not TypeSpec ts ? null : ts.TypeSig.RemovePinnedAndModifiers() as GenericInstSig;
 
 		/// <summary>
 		/// Returns a <see cref="PtrSig"/>
@@ -328,10 +304,7 @@ namespace dnlib.DotNet {
 		/// <param name="type">The type</param>
 		/// <returns>A <see cref="PtrSig"/> or <c>null</c> if it's not a
 		/// <see cref="PtrSig"/></returns>
-		public static PtrSig TryGetPtrSig(this ITypeDefOrRef type) {
-			var ts = type as TypeSpec;
-			return ts is null ? null : ts.TypeSig.RemovePinnedAndModifiers() as PtrSig;
-		}
+		public static PtrSig TryGetPtrSig(this ITypeDefOrRef type) => type is not TypeSpec ts ? null : ts.TypeSig.RemovePinnedAndModifiers() as PtrSig;
 
 		/// <summary>
 		/// Returns a <see cref="ByRefSig"/>
@@ -339,10 +312,7 @@ namespace dnlib.DotNet {
 		/// <param name="type">The type</param>
 		/// <returns>A <see cref="ByRefSig"/> or <c>null</c> if it's not a
 		/// <see cref="ByRefSig"/></returns>
-		public static ByRefSig TryGetByRefSig(this ITypeDefOrRef type) {
-			var ts = type as TypeSpec;
-			return ts is null ? null : ts.TypeSig.RemovePinnedAndModifiers() as ByRefSig;
-		}
+		public static ByRefSig TryGetByRefSig(this ITypeDefOrRef type) => type is not TypeSpec ts ? null : ts.TypeSig.RemovePinnedAndModifiers() as ByRefSig;
 
 		/// <summary>
 		/// Returns a <see cref="ArraySig"/>
@@ -350,10 +320,7 @@ namespace dnlib.DotNet {
 		/// <param name="type">The type</param>
 		/// <returns>A <see cref="ArraySig"/> or <c>null</c> if it's not a
 		/// <see cref="ArraySig"/></returns>
-		public static ArraySig TryGetArraySig(this ITypeDefOrRef type) {
-			var ts = type as TypeSpec;
-			return ts is null ? null : ts.TypeSig.RemovePinnedAndModifiers() as ArraySig;
-		}
+		public static ArraySig TryGetArraySig(this ITypeDefOrRef type) => type is not TypeSpec ts ? null : ts.TypeSig.RemovePinnedAndModifiers() as ArraySig;
 
 		/// <summary>
 		/// Returns a <see cref="SZArraySig"/>
@@ -361,10 +328,7 @@ namespace dnlib.DotNet {
 		/// <param name="type">The type</param>
 		/// <returns>A <see cref="SZArraySig"/> or <c>null</c> if it's not a
 		/// <see cref="SZArraySig"/></returns>
-		public static SZArraySig TryGetSZArraySig(this ITypeDefOrRef type) {
-			var ts = type as TypeSpec;
-			return ts is null ? null : ts.TypeSig.RemovePinnedAndModifiers() as SZArraySig;
-		}
+		public static SZArraySig TryGetSZArraySig(this ITypeDefOrRef type) => type is not TypeSpec ts ? null : ts.TypeSig.RemovePinnedAndModifiers() as SZArraySig;
 
 		/// <summary>
 		/// Returns the base type of <paramref name="tdr"/>. Throws if we can't resolve
@@ -393,8 +357,7 @@ namespace dnlib.DotNet {
 				return td?.BaseType;
 			}
 
-			var ts = tdr as TypeSpec;
-			if (ts is null)
+			if (tdr is not TypeSpec ts)
 				return null;
 
 			var git = ts.TypeSig.ToGenericInstSig();

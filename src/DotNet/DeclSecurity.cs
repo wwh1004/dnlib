@@ -208,7 +208,7 @@ namespace dnlib.DotNet {
 		public DeclSecurityMD(ModuleDefMD readerModule, uint rid) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.DeclSecurityTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"DeclSecurity rid {rid} does not exist");
 #endif

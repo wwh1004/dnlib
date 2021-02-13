@@ -390,8 +390,7 @@ namespace dnlib.DotNet {
 				newCl = newTr;
 			}
 			else if ((ts = cl as TypeSpec) is not null) {
-				var gis = ts.TypeSig as GenericInstSig;
-				if (gis is null || !(gis.GenericType is ClassSig))
+				if (ts.TypeSig is not GenericInstSig gis || !(gis.GenericType is ClassSig))
 					return null;
 				tr = gis.GenericType.TypeRef;
 				if (tr is null)

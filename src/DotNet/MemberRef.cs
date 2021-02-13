@@ -207,7 +207,7 @@ namespace dnlib.DotNet {
 		public bool HasThis {
 			get {
 				var ms = MethodSig;
-				return ms is null ? false : ms.HasThis;
+				return ms is not null && ms.HasThis;
 			}
 		}
 
@@ -217,7 +217,7 @@ namespace dnlib.DotNet {
 		public bool ExplicitThis {
 			get {
 				var ms = MethodSig;
-				return ms is null ? false : ms.ExplicitThis;
+				return ms is not null && ms.ExplicitThis;
 			}
 		}
 
@@ -477,7 +477,7 @@ namespace dnlib.DotNet {
 		public MemberRefMD(ModuleDefMD readerModule, uint rid, GenericParamContext gpContext) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.MemberRefTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"MemberRef rid {rid} does not exist");
 #endif

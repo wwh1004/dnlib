@@ -44,10 +44,9 @@ namespace dnlib.DotNet {
 			if (data is null)
 				return null;
 
-			using (var asmHash = new AssemblyHash(hashAlgo)) {
-				asmHash.Hash(data);
-				return asmHash.ComputeHash();
-			}
+			using var asmHash = new AssemblyHash(hashAlgo);
+			asmHash.Hash(data);
+			return asmHash.ComputeHash();
 		}
 
 		/// <summary>

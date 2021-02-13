@@ -672,8 +672,7 @@ namespace dnlib.DotNet {
 				return true;
 			}
 
-			var tdrs = ts as TypeDefOrRefSig;
-			if (tdrs is null)
+			if (ts is not TypeDefOrRefSig tdrs)
 				return false;
 
 			var td = tdrs.TypeDef;
@@ -809,7 +808,7 @@ namespace dnlib.DotNet {
 		public FieldDefMD(ModuleDefMD readerModule, uint rid) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.FieldTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"Field rid {rid} does not exist");
 #endif

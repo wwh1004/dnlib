@@ -24,7 +24,7 @@ namespace dnlib.PE {
 			const int ChecksumFieldSize = 4;
 			stream.Position += ChecksumFieldSize;
 			checkSum = CalculatePECheckSum(stream, length - checkSumOffset - ChecksumFieldSize, checkSum, buffer);
-			ulong cks = (ulong)checkSum + (ulong)length;
+			ulong cks = checkSum + (ulong)length;
 			return (uint)cks + (uint)(cks >> 32);
 		}
 

@@ -1145,7 +1145,7 @@ namespace dnlib.DotNet.MD {
 			if (cr is not null && cr.ReadColumn(table, rid, column, out value))
 				return true;
 			var reader = table.DataReader;
-			reader.Position = (rid - 1) * (uint)table.TableInfo.RowSize + (uint)column.Offset;
+			reader.Position = ((rid - 1) * (uint)table.TableInfo.RowSize) + (uint)column.Offset;
 			value = column.Read(ref reader);
 			return true;
 		}
@@ -1163,7 +1163,7 @@ namespace dnlib.DotNet.MD {
 			if (cr is not null && cr.ReadColumn(table, rid, column, out value))
 				return true;
 			var reader = table.DataReader;
-			reader.Position = (rid - 1) * (uint)table.TableInfo.RowSize + (uint)column.Offset;
+			reader.Position = ((rid - 1) * (uint)table.TableInfo.RowSize) + (uint)column.Offset;
 			value = column.Size == 2 ? reader.Unsafe_ReadUInt16() : reader.Unsafe_ReadUInt32();
 			return true;
 		}

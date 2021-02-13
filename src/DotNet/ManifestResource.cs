@@ -219,7 +219,7 @@ namespace dnlib.DotNet {
 		public ManifestResourceMD(ModuleDefMD readerModule, uint rid) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.ManifestResourceTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"ManifestResource rid {rid} does not exist");
 #endif

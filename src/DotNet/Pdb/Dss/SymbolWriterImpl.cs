@@ -68,8 +68,7 @@ namespace dnlib.DotNet.Pdb.Dss {
 		}
 
 		public override void DefineSequencePoints(ISymbolDocumentWriter document, uint arraySize, int[] offsets, int[] lines, int[] columns, int[] endLines, int[] endColumns) {
-			var doc = document as SymbolDocumentWriter;
-			if (doc is null)
+			if (document is not SymbolDocumentWriter doc)
 				throw new ArgumentException("document isn't a non-null SymbolDocumentWriter instance");
 			writer.DefineSequencePoints(doc.SymUnmanagedDocumentWriter, arraySize, offsets, lines, columns, endLines, endColumns);
 		}

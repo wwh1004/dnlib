@@ -111,8 +111,7 @@ namespace dnlib.DotNet.Pdb {
 
 		/// <inheritdoc/>
 		public override bool Equals(object obj) {
-			var other = obj as PdbDocument;
-			if (other is null)
+			if (obj is not PdbDocument other)
 				return false;
 			return StringComparer.OrdinalIgnoreCase.Equals(Url ?? string.Empty, other.Url ?? string.Empty);
 		}

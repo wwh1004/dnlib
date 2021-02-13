@@ -412,7 +412,7 @@ namespace dnlib.DotNet.MD {
 		/// <returns></returns>
 		public uint this[int index] =>
 			index switch {
-				0 => (uint)(int)Action,
+				0 => (uint)Action,
 				1 => Parent,
 				2 => PermissionSet,
 				_ => 0,

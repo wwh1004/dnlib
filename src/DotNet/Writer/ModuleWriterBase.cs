@@ -656,17 +656,16 @@ namespace dnlib.DotNet.Writer {
 		/// </summary>
 		/// <param name="fileName">File name. The file will be truncated if it exists.</param>
 		public void Write(string fileName) {
-			using (var dest = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite)) {
-				dest.SetLength(0);
-				try {
-					Write(dest);
-				}
-				catch {
-					// Writing failed. Delete the file since it's useless.
-					dest.Close();
-					DeleteFileNoThrow(fileName);
-					throw;
-				}
+			using var dest = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+			dest.SetLength(0);
+			try {
+				Write(dest);
+			}
+			catch {
+				// Writing failed. Delete the file since it's useless.
+				dest.Close();
+				DeleteFileNoThrow(fileName);
+				throw;
 			}
 		}
 
@@ -899,34 +898,32 @@ namespace dnlib.DotNet.Writer {
 				return;
 			}
 
-			using (var pdbWriter = new WindowsPdbWriter(symWriter, pdbState, metadata)) {
-				pdbWriter.Logger = TheOptions.Logger;
-				pdbWriter.Write();
+			using var pdbWriter = new WindowsPdbWriter(symWriter, pdbState, metadata);
+			pdbWriter.Logger = TheOptions.Logger;
+			pdbWriter.Write();
 
-				var pdbAge = PdbAge;
-				bool hasContentId = pdbWriter.GetDebugInfo(TheOptions.PdbChecksumAlgorithm, ref pdbAge, out var pdbGuid, out uint stamp, out var idd, out var codeViewData);
-				if (hasContentId) {
-					debugDirectory.Add(GetCodeViewData(pdbGuid, pdbAge, TheOptions.PdbFileNameInDebugDirectory ?? pdbFilename),
-						type: ImageDebugType.CodeView,
-						majorVersion: 0,
-						minorVersion: 0,
-						timeDateStamp: stamp);
-				}
-				else {
-					Debug.Fail("Failed to get the PDB content ID");
-					if (codeViewData is null)
-						throw new InvalidOperationException();
-					var entry = debugDirectory.Add(codeViewData);
-					entry.DebugDirectory = idd;
-					entry.DebugDirectory.TimeDateStamp = GetTimeDateStamp();
-				}
-
-				//TODO: Only do this if symWriter supports PDB checksums
-				if (addPdbChecksumDebugDirectoryEntry)
-					{}//TODO: AddPdbChecksumDebugDirectoryEntry(checksumBytes, TheOptions.PdbChecksumAlgorithm);, and verify that the order of the debug dir entries is the same as Roslyn created binaries
-				if (symWriter.IsDeterministic)
-					AddReproduciblePdbDebugDirectoryEntry();
+			var pdbAge = PdbAge;
+			bool hasContentId = pdbWriter.GetDebugInfo(TheOptions.PdbChecksumAlgorithm, ref pdbAge, out var pdbGuid, out uint stamp, out var idd, out var codeViewData);
+			if (hasContentId) {
+				debugDirectory.Add(GetCodeViewData(pdbGuid, pdbAge, TheOptions.PdbFileNameInDebugDirectory ?? pdbFilename),
+					type: ImageDebugType.CodeView,
+					majorVersion: 0,
+					minorVersion: 0,
+					timeDateStamp: stamp);
 			}
+			else {
+				Debug.Fail("Failed to get the PDB content ID");
+				if (codeViewData is null)
+					throw new InvalidOperationException();
+				var entry = debugDirectory.Add(codeViewData);
+				entry.DebugDirectory = idd;
+				entry.DebugDirectory.TimeDateStamp = GetTimeDateStamp();
+			}
+
+			//TODO: Only do this if symWriter supports PDB checksums
+			if (addPdbChecksumDebugDirectoryEntry) { }//TODO: AddPdbChecksumDebugDirectoryEntry(checksumBytes, TheOptions.PdbChecksumAlgorithm);, and verify that the order of the debug dir entries is the same as Roslyn created binaries
+			if (symWriter.IsDeterministic)
+				AddReproduciblePdbDebugDirectoryEntry();
 		}
 
 		/// <summary>
@@ -1081,10 +1078,9 @@ namespace dnlib.DotNet.Writer {
 		static byte[] Compress(MemoryStream sourceStream) {
 			sourceStream.Position = 0;
 			var destStream = new MemoryStream();
-			using (var deflate = new DeflateStream(destStream, CompressionMode.Compress)) {
-				var source = sourceStream.ToArray();
-				deflate.Write(source, 0, source.Length);
-			}
+			using var deflate = new DeflateStream(destStream, CompressionMode.Compress);
+			var source = sourceStream.ToArray();
+			deflate.Write(source, 0, source.Length);
 			return destStream.ToArray();
 		}
 
@@ -1232,7 +1228,7 @@ namespace dnlib.DotNet.Writer {
 			subProgress = Math.Min(1, Math.Max(0, subProgress));
 			var baseProgress = eventToProgress[(int)evt];
 			var nextProgress = eventToProgress[(int)nextEvt];
-			var progress = baseProgress + (nextProgress - baseProgress) * subProgress;
+			var progress = baseProgress + ((nextProgress - baseProgress) * subProgress);
 			progress = Math.Min(1, Math.Max(0, progress));
 			TheOptions.RaiseEvent(this, new ModuleWriterProgressEventArgs(this, progress));
 		}

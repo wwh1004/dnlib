@@ -52,7 +52,7 @@ namespace dnlib.DotNet.Writer {
 			if (!Enable)
 				return;
 			if (is64bit) {
-				writer.WriteUInt64((ulong)(uint)ImportDirectory.CorXxxMainRVA);
+				writer.WriteUInt64((uint)ImportDirectory.CorXxxMainRVA);
 				writer.WriteUInt64(0);
 			}
 			else {

@@ -1447,7 +1447,7 @@ namespace dnlib.DotNet.Writer {
 			subProgress = Math.Min(1, Math.Max(0, subProgress));
 			var baseProgress = eventToProgress[(int)evt];
 			var nextProgress = eventToProgress[(int)evt + 1];
-			var progress = baseProgress + (nextProgress - baseProgress) * subProgress;
+			var progress = baseProgress + ((nextProgress - baseProgress) * subProgress);
 			progress = Math.Min(1, Math.Max(0, progress));
 			ProgressUpdated?.Invoke(this, new MetadataProgressEventArgs(this, progress));
 		}
@@ -2150,7 +2150,7 @@ namespace dnlib.DotNet.Writer {
 		/// <inheritdoc/>
 		public virtual MDToken GetToken(IList<TypeSig> locals, uint origToken) {
 			if (locals is null || locals.Count == 0)
-				return new MDToken((Table)0, 0);
+				return new MDToken(0, 0);
 
 			var row = new RawStandAloneSigRow(GetSignature(new LocalSig(locals, false)));
 			uint rid = tablesHeap.StandAloneSigTable.Add(row);

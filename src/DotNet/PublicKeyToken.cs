@@ -27,10 +27,9 @@ namespace dnlib.DotNet {
 
 		/// <inheritdoc/>
 		public override bool Equals(object obj) {
-			if ((object)this == obj)
+			if (this == obj)
 				return true;
-			var other = obj as PublicKeyToken;
-			if (other is null)
+			if (obj is not PublicKeyToken other)
 				return false;
 			return Utils.Equals(Data, other.Data);
 		}

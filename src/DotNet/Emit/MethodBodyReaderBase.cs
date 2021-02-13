@@ -56,9 +56,7 @@ namespace dnlib.DotNet.Emit {
 		/// Constructor
 		/// </summary>
 		/// <param name="context">The module context</param>
-		protected MethodBodyReaderBase(ModuleContext context) {
-			this.context = context;
-		}
+		protected MethodBodyReaderBase(ModuleContext context) => this.context = context;
 
 		/// <summary>
 		/// Constructor
@@ -224,7 +222,7 @@ namespace dnlib.DotNet.Emit {
 
 			if (instr.OpCode.Code == Code.Switch) {
 				var targets = (IList<uint>)instr.Operand;
-				currentOffset += (uint)(instr.OpCode.Size + 4 + 4 * targets.Count);
+				currentOffset += (uint)(instr.OpCode.Size + 4 + (4 * targets.Count));
 			}
 			else
 				currentOffset += (uint)instr.GetSize();
@@ -353,7 +351,7 @@ namespace dnlib.DotNet.Emit {
 		/// <returns>The operand</returns>
 		protected virtual IList<uint> ReadInlineSwitch(Instruction instr) {
 			var num = reader.ReadUInt32();
-			long offsetAfterInstr = (long)instr.Offset + (long)instr.OpCode.Size + 4L + (long)num * 4;
+			long offsetAfterInstr = instr.Offset + instr.OpCode.Size + 4L + ((long)num * 4);
 			if (offsetAfterInstr > uint.MaxValue || codeStartOffs + offsetAfterInstr > codeEndOffs) {
 				reader.Position = codeEndOffs;
 				return Array2.Empty<uint>();

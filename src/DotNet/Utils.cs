@@ -83,8 +83,8 @@ namespace dnlib.DotNet {
 
 		static char ToHexChar(int val, bool upper) {
 			if (0 <= val && val <= 9)
-				return (char)(val + (int)'0');
-			return (char)(val - 10 + (upper ? (int)'A' : (int)'a'));
+				return (char)(val + '0');
+			return (char)(val - 10 + (upper ? 'A' : 'a'));
 		}
 
 		/// <summary>
@@ -120,11 +120,11 @@ namespace dnlib.DotNet {
 		/// a valid hex digit</returns>
 		static int TryParseHexChar(char c) {
 			if ('0' <= c && c <= '9')
-				return (ushort)c - (ushort)'0';
+				return c - '0';
 			if ('a' <= c && c <= 'f')
-				return 10 + (ushort)c - (ushort)'a';
+				return 10 + c - 'a';
 			if ('A' <= c && c <= 'F')
-				return 10 + (ushort)c - (ushort)'A';
+				return 10 + c - 'A';
 			return -1;
 		}
 

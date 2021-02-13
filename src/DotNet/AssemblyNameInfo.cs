@@ -231,8 +231,7 @@ namespace dnlib.DotNet {
 		public AssemblyNameInfo(IAssembly asm) {
 			if (asm is null)
 				return;
-			var asmDef = asm as AssemblyDef;
-			hashAlgId = asmDef is null ? 0 : asmDef.HashAlgorithm;
+			hashAlgId = asm is not AssemblyDef asmDef ? 0 : asmDef.HashAlgorithm;
 			version = asm.Version ?? new Version(0, 0, 0, 0);
 			flags = asm.Attributes;
 			publicKeyOrToken = asm.PublicKeyOrToken;

@@ -515,14 +515,13 @@ namespace dnlib.DotNet {
 		/// <returns>The counter signature</returns>
 		public static byte[] CreateCounterSignature(StrongNamePublicKey identityPubKey, StrongNameKey identityKey, StrongNamePublicKey signaturePubKey) {
 			var hash = AssemblyHash.Hash(signaturePubKey.CreatePublicKey(), identityPubKey.HashAlgorithm);
-			using (var rsa = identityKey.CreateRSA()) {
-				var rsaFmt = new RSAPKCS1SignatureFormatter(rsa);
-				string hashName = identityPubKey.HashAlgorithm.GetName();
-				rsaFmt.SetHashAlgorithm(hashName);
-				var snSig = rsaFmt.CreateSignature(hash);
-				Array.Reverse(snSig);
-				return snSig;
-			}
+			using var rsa = identityKey.CreateRSA();
+			var rsaFmt = new RSAPKCS1SignatureFormatter(rsa);
+			string hashName = identityPubKey.HashAlgorithm.GetName();
+			rsaFmt.SetHashAlgorithm(hashName);
+			var snSig = rsaFmt.CreateSignature(hash);
+			Array.Reverse(snSig);
+			return snSig;
 		}
 	}
 }

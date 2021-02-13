@@ -463,7 +463,7 @@ namespace dnlib.DotNet {
 		public bool HasThis {
 			get {
 				var ms = MethodSig;
-				return ms is null ? false : ms.HasThis;
+				return ms is not null && ms.HasThis;
 			}
 		}
 
@@ -473,7 +473,7 @@ namespace dnlib.DotNet {
 		public bool ExplicitThis {
 			get {
 				var ms = MethodSig;
-				return ms is null ? false : ms.ExplicitThis;
+				return ms is not null && ms.ExplicitThis;
 			}
 		}
 
@@ -1115,8 +1115,7 @@ namespace dnlib.DotNet {
 
 		/// <inheritdoc/>
 		protected override void InitializeOverrides() {
-			var dt = declaringType2 as TypeDefMD;
-			var tmp = dt is null ? new List<MethodOverride>() : dt.GetMethodOverrides(this, new GenericParamContext(declaringType2, this));
+			var tmp = declaringType2 is not TypeDefMD dt ? new List<MethodOverride>() : dt.GetMethodOverrides(this, new GenericParamContext(declaringType2, this));
 			Interlocked.CompareExchange(ref overrides, tmp, null);
 		}
 
@@ -1137,7 +1136,7 @@ namespace dnlib.DotNet {
 		public MethodDefMD(ModuleDefMD readerModule, uint rid) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.MethodTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"Method rid {rid} does not exist");
 #endif

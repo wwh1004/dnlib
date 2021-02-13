@@ -374,7 +374,7 @@ namespace dnlib.DotNet {
 		public EventDefMD(ModuleDefMD readerModule, uint rid) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.EventTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"Event rid {rid} does not exist");
 #endif
@@ -405,8 +405,7 @@ namespace dnlib.DotNet {
 		/// <inheritdoc/>
 		protected override void InitializeEventMethods_NoLock() {
 			IList<MethodDef> newOtherMethods;
-			var dt = declaringType2 as TypeDefMD;
-			if (dt is null)
+			if (declaringType2 is not TypeDefMD dt)
 				newOtherMethods = new List<MethodDef>();
 			else
 				dt.InitializeEvent(this, out addMethod, out invokeMethod, out removeMethod, out newOtherMethods);

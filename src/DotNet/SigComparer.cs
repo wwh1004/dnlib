@@ -628,8 +628,7 @@ namespace dnlib.DotNet {
 		}
 
 		static GenericInstSig GetGenericInstanceType(IMemberRefParent parent) {
-			var ts = parent as TypeSpec;
-			if (ts is null)
+			if (parent is not TypeSpec ts)
 				return null;
 			return ts.TypeSig.RemoveModifiers() as GenericInstSig;
 		}
@@ -2270,23 +2269,19 @@ exit: ;
 			case CallingConvention.Property:
 			case CallingConvention.NativeVarArg:
 			case CallingConvention.Unmanaged:
-				var ma = a as MethodBaseSig;
-				hash = ma is null ? 0 : GetHashCode(ma);
+				hash = a is not MethodBaseSig ma ? 0 : GetHashCode(ma);
 				break;
 
 			case CallingConvention.Field:
-				var fa = a as FieldSig;
-				hash = fa is null ? 0 : GetHashCode(fa);
+				hash = a is not FieldSig fa ? 0 : GetHashCode(fa);
 				break;
 
 			case CallingConvention.LocalSig:
-				var la = a as LocalSig;
-				hash = la is null ? 0 : GetHashCode(la);
+				hash = a is not LocalSig la ? 0 : GetHashCode(la);
 				break;
 
 			case CallingConvention.GenericInst:
-				var ga = a as GenericInstMethodSig;
-				hash = ga is null ? 0 : GetHashCode(ga);
+				hash = a is not GenericInstMethodSig ga ? 0 : GetHashCode(ga);
 				break;
 
 			default:
@@ -4353,8 +4348,7 @@ exit: ;
 			var reqMods1 = new List<ITypeDefOrRef>(reqMods2.Count);
 			var optMods1 = new List<ITypeDefOrRef>(optMods2.Count);
 			while (true) {
-				var modifierSig = aAfterModifiers as ModifierSig;
-				if (modifierSig is null)
+				if (aAfterModifiers is not ModifierSig modifierSig)
 					break;
 				if (modifierSig is CModOptSig)
 					optMods1.Add(modifierSig.Modifier);

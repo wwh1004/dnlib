@@ -50,8 +50,7 @@ namespace dnlib.DotNet {
 		public override bool Equals(object obj) {
 			if ((object)this == obj)
 				return true;
-			var other = obj as PublicKey;
-			if (other is null)
+			if (obj is not PublicKey other)
 				return false;
 			return Utils.Equals(Data, other.Data);
 		}

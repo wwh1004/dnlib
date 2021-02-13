@@ -36,8 +36,8 @@ namespace dnlib.DotNet.Writer {
 		/// <returns>A field marshal blob or <c>null</c> if <paramref name="marshalType"/> is
 		/// <c>null</c></returns>
 		public static byte[] Write(ModuleDef module, MarshalType marshalType, IWriterError helper, bool optimizeCustomAttributeSerializedTypeNames) {
-			using (var writer = new MarshalBlobWriter(module, helper, optimizeCustomAttributeSerializedTypeNames))
-				return writer.Write(marshalType);
+			using var writer = new MarshalBlobWriter(module, helper, optimizeCustomAttributeSerializedTypeNames);
+			return writer.Write(marshalType);
 		}
 
 		MarshalBlobWriter(ModuleDef module, IWriterError helper, bool optimizeCustomAttributeSerializedTypeNames) {

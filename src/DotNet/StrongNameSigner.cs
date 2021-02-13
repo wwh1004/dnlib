@@ -77,77 +77,76 @@ namespace dnlib.DotNet {
 			snSigOffset += baseOffset;
 			long snSigOffsetEnd = snSigOffset + snSigSize;
 
-			using (var hasher = new AssemblyHash(hashAlg)) {
-				var buffer = new byte[0x8000];
+			using var hasher = new AssemblyHash(hashAlg);
+			var buffer = new byte[0x8000];
 
-				// Hash the DOS header. It's defined to be all data from the start of
-				// the file up to the NT headers.
-				stream.Position = baseOffset + 0x3C;
-				uint ntHeadersOffs = reader.ReadUInt32();
-				stream.Position = baseOffset;
-				hasher.Hash(stream, ntHeadersOffs, buffer);
+			// Hash the DOS header. It's defined to be all data from the start of
+			// the file up to the NT headers.
+			stream.Position = baseOffset + 0x3C;
+			uint ntHeadersOffs = reader.ReadUInt32();
+			stream.Position = baseOffset;
+			hasher.Hash(stream, ntHeadersOffs, buffer);
 
-				// Hash NT headers, but hash authenticode + checksum as 0s
-				stream.Position += 6;
-				int numSections = reader.ReadUInt16();
-				stream.Position -= 8;
-				hasher.Hash(stream, 0x18, buffer);	// magic + FileHeader
+			// Hash NT headers, but hash authenticode + checksum as 0s
+			stream.Position += 6;
+			int numSections = reader.ReadUInt16();
+			stream.Position -= 8;
+			hasher.Hash(stream, 0x18, buffer);  // magic + FileHeader
 
-				bool is32bit = reader.ReadUInt16() == 0x010B;
-				stream.Position -= 2;
-				int optHeaderSize = is32bit ? 0x60 : 0x70;
-				if (stream.Read(buffer, 0, optHeaderSize) != optHeaderSize)
-					throw new IOException("Could not read data");
-				// Clear checksum
-				for (int i = 0; i < 4; i++)
-					buffer[0x40 + i] = 0;
-				hasher.Hash(buffer, 0, optHeaderSize);
+			bool is32bit = reader.ReadUInt16() == 0x010B;
+			stream.Position -= 2;
+			int optHeaderSize = is32bit ? 0x60 : 0x70;
+			if (stream.Read(buffer, 0, optHeaderSize) != optHeaderSize)
+				throw new IOException("Could not read data");
+			// Clear checksum
+			for (int i = 0; i < 4; i++)
+				buffer[0x40 + i] = 0;
+			hasher.Hash(buffer, 0, optHeaderSize);
 
-				const int imageDirsSize = 16 * 8;
-				if (stream.Read(buffer, 0, imageDirsSize) != imageDirsSize)
-					throw new IOException("Could not read data");
-				// Clear authenticode data dir
-				for (int i = 0; i < 8; i++)
-					buffer[4 * 8 + i] = 0;
-				hasher.Hash(buffer, 0, imageDirsSize);
+			const int imageDirsSize = 16 * 8;
+			if (stream.Read(buffer, 0, imageDirsSize) != imageDirsSize)
+				throw new IOException("Could not read data");
+			// Clear authenticode data dir
+			for (int i = 0; i < 8; i++)
+				buffer[(4 * 8) + i] = 0;
+			hasher.Hash(buffer, 0, imageDirsSize);
 
-				// Hash section headers
-				long sectHeadersOffs = stream.Position;
-				hasher.Hash(stream, (uint)numSections * 0x28, buffer);
+			// Hash section headers
+			long sectHeadersOffs = stream.Position;
+			hasher.Hash(stream, (uint)numSections * 0x28, buffer);
 
-				// Hash all raw section data but make sure we don't hash the location
-				// where the strong name signature will be stored.
-				for (int i = 0; i < numSections; i++) {
-					stream.Position = sectHeadersOffs + i * 0x28 + 0x10;
-					uint sizeOfRawData = reader.ReadUInt32();
-					uint pointerToRawData = reader.ReadUInt32();
+			// Hash all raw section data but make sure we don't hash the location
+			// where the strong name signature will be stored.
+			for (int i = 0; i < numSections; i++) {
+				stream.Position = sectHeadersOffs + (i * 0x28) + 0x10;
+				uint sizeOfRawData = reader.ReadUInt32();
+				uint pointerToRawData = reader.ReadUInt32();
 
-					stream.Position = baseOffset + pointerToRawData;
-					while (sizeOfRawData > 0) {
-						var pos = stream.Position;
+				stream.Position = baseOffset + pointerToRawData;
+				while (sizeOfRawData > 0) {
+					var pos = stream.Position;
 
-						if (snSigOffset <= pos && pos < snSigOffsetEnd) {
-							uint skipSize = (uint)(snSigOffsetEnd - pos);
-							if (skipSize >= sizeOfRawData)
-								break;
-							sizeOfRawData -= skipSize;
-							stream.Position += skipSize;
-							continue;
-						}
-
-						if (pos >= snSigOffsetEnd) {
-							hasher.Hash(stream, sizeOfRawData, buffer);
+					if (snSigOffset <= pos && pos < snSigOffsetEnd) {
+						uint skipSize = (uint)(snSigOffsetEnd - pos);
+						if (skipSize >= sizeOfRawData)
 							break;
-						}
-
-						uint maxLen = (uint)Math.Min(snSigOffset - pos, sizeOfRawData);
-						hasher.Hash(stream, maxLen, buffer);
-						sizeOfRawData -= maxLen;
+						sizeOfRawData -= skipSize;
+						stream.Position += skipSize;
+						continue;
 					}
-				}
 
-				return hasher.ComputeHash();
+					if (pos >= snSigOffsetEnd) {
+						hasher.Hash(stream, sizeOfRawData, buffer);
+						break;
+					}
+
+					uint maxLen = (uint)Math.Min(snSigOffset - pos, sizeOfRawData);
+					hasher.Hash(stream, maxLen, buffer);
+					sizeOfRawData -= maxLen;
+				}
 			}
+
+			return hasher.ComputeHash();
 		}
 
 		/// <summary>
@@ -158,14 +157,13 @@ namespace dnlib.DotNet {
 		/// <param name="hash">Strong name hash of the .NET PE file</param>
 		/// <returns>Strong name signature</returns>
 		byte[] GetStrongNameSignature(StrongNameKey snk, AssemblyHashAlgorithm hashAlg, byte[] hash) {
-			using (var rsa = snk.CreateRSA()) {
-				var rsaFmt = new RSAPKCS1SignatureFormatter(rsa);
-				string hashName = hashAlg.GetName() ?? AssemblyHashAlgorithm.SHA1.GetName();
-				rsaFmt.SetHashAlgorithm(hashName);
-				var snSig = rsaFmt.CreateSignature(hash);
-				Array.Reverse(snSig);
-				return snSig;
-			}
+			using var rsa = snk.CreateRSA();
+			var rsaFmt = new RSAPKCS1SignatureFormatter(rsa);
+			string hashName = hashAlg.GetName() ?? AssemblyHashAlgorithm.SHA1.GetName();
+			rsaFmt.SetHashAlgorithm(hashName);
+			var snSig = rsaFmt.CreateSignature(hash);
+			Array.Reverse(snSig);
+			return snSig;
 		}
 	}
 }

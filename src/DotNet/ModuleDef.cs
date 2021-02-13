@@ -1222,11 +1222,9 @@ namespace dnlib.DotNet {
 			if (typeRef is TypeRef tr)
 				return Find(tr);
 
-			var ts = typeRef as TypeSpec;
-			if (ts is null)
+			if (typeRef is not TypeSpec ts)
 				return null;
-			var sig = ts.TypeSig as TypeDefOrRefSig;
-			if (sig is null)
+			if (ts.TypeSig is not TypeDefOrRefSig sig)
 				return null;
 
 			td = sig.TypeDef;
@@ -1315,8 +1313,7 @@ namespace dnlib.DotNet {
 		/// </summary>
 		public IEnumerable<AssemblyRef> GetAssemblyRefs() {
 			for (uint rid = 1; ; rid++) {
-				var asmRef = ResolveToken(new MDToken(Table.AssemblyRef, rid).Raw) as AssemblyRef;
-				if (asmRef is null)
+				if (ResolveToken(new MDToken(Table.AssemblyRef, rid).Raw) is not AssemblyRef asmRef)
 					break;
 				yield return asmRef;
 			}
@@ -1327,8 +1324,7 @@ namespace dnlib.DotNet {
 		/// </summary>
 		public IEnumerable<ModuleRef> GetModuleRefs() {
 			for (uint rid = 1; ; rid++) {
-				var modRef = ResolveToken(new MDToken(Table.ModuleRef, rid).Raw) as ModuleRef;
-				if (modRef is null)
+				if (ResolveToken(new MDToken(Table.ModuleRef, rid).Raw) is not ModuleRef modRef)
 					break;
 				yield return modRef;
 			}
@@ -1347,8 +1343,7 @@ namespace dnlib.DotNet {
 		/// <param name="gpContext">Generic parameter context</param>
 		public IEnumerable<MemberRef> GetMemberRefs(GenericParamContext gpContext) {
 			for (uint rid = 1; ; rid++) {
-				var mr = ResolveToken(new MDToken(Table.MemberRef, rid).Raw, gpContext) as MemberRef;
-				if (mr is null)
+				if (ResolveToken(new MDToken(Table.MemberRef, rid).Raw, gpContext) is not MemberRef mr)
 					break;
 				yield return mr;
 			}
@@ -1359,8 +1354,7 @@ namespace dnlib.DotNet {
 		/// </summary>
 		public IEnumerable<TypeRef> GetTypeRefs() {
 			for (uint rid = 1; ; rid++) {
-				var mr = ResolveToken(new MDToken(Table.TypeRef, rid).Raw) as TypeRef;
-				if (mr is null)
+				if (ResolveToken(new MDToken(Table.TypeRef, rid).Raw) is not TypeRef mr)
 					break;
 				yield return mr;
 			}
@@ -1513,7 +1507,7 @@ namespace dnlib.DotNet {
 				readerModule = (ModuleDefMD)this;
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (rid != 1 && readerModule.TablesStream.ModuleTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"Module rid {rid} does not exist");
 #endif

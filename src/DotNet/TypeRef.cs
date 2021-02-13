@@ -276,8 +276,7 @@ namespace dnlib.DotNet {
 			if (typeRef is null)
 				return null;
 			for (int i = 0; i < 1000; i++) {
-				var next = typeRef.ResolutionScope as TypeRef;
-				if (next is null)
+				if (typeRef.ResolutionScope is not TypeRef next)
 					return typeRef;
 				typeRef = next;
 			}
@@ -368,7 +367,7 @@ namespace dnlib.DotNet {
 		public TypeRefMD(ModuleDefMD readerModule, uint rid) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.TypeRefTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"TypeRef rid {rid} does not exist");
 #endif

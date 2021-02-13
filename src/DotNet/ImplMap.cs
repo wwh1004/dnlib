@@ -285,7 +285,7 @@ namespace dnlib.DotNet {
 		public ImplMapMD(ModuleDefMD readerModule, uint rid) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.ImplMapTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"ImplMap rid {rid} does not exist");
 #endif

@@ -469,7 +469,7 @@ namespace dnlib.DotNet {
 		public PropertyDefMD(ModuleDefMD readerModule, uint rid) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.PropertyTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"Property rid {rid} does not exist");
 #endif
@@ -503,8 +503,7 @@ namespace dnlib.DotNet {
 				return;
 			IList<MethodDef> newOtherMethods;
 			IList<MethodDef> newGetMethods, newSetMethods;
-			var dt = declaringType2 as TypeDefMD;
-			if (dt is null) {
+			if (declaringType2 is not TypeDefMD dt) {
 				newGetMethods = new List<MethodDef>();
 				newSetMethods = new List<MethodDef>();
 				newOtherMethods = new List<MethodDef>();

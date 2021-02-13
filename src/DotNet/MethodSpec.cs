@@ -241,7 +241,7 @@ namespace dnlib.DotNet {
 		public MethodSpecMD(ModuleDefMD readerModule, uint rid, GenericParamContext gpContext) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.MethodSpecTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"MethodSpec rid {rid} does not exist");
 #endif

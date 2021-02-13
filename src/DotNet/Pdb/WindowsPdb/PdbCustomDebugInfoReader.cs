@@ -163,8 +163,8 @@ namespace dnlib.DotNet.Pdb.WindowsPdb {
 				if (bodyOpt is null)
 					return null;
 				count = reader.ReadInt32();
-				const int dynLocalRecSize = 64 + 4 + 4 + 2 * 64;
-				if (reader.Position + (ulong)(uint)count * dynLocalRecSize > recPosEnd)
+				const int dynLocalRecSize = 64 + 4 + 4 + (2 * 64);
+				if (reader.Position + ((ulong)(uint)count * dynLocalRecSize) > recPosEnd)
 					return null;
 				var dynLocListRec = new PdbDynamicLocalsCustomDebugInfo(count);
 				for (int i = 0; i < count; i++) {
@@ -185,7 +185,7 @@ namespace dnlib.DotNet.Pdb.WindowsPdb {
 					if (localIndex != 0 && (uint)localIndex >= (uint)bodyOpt.Variables.Count)
 						return null;
 
-					var nameEndPos = reader.Position + 2 * 64;
+					var nameEndPos = reader.Position + (2 * 64);
 					name = ReadUnicodeZ(nameEndPos, needZeroChar: false);
 					reader.Position = nameEndPos;
 

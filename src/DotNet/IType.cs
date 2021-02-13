@@ -95,12 +95,10 @@ namespace dnlib.DotNet {
 			if (type is null)
 				return null;
 			var scopeType = type.ScopeType;
-			var tr = scopeType as TypeRef;
-			if (tr is null)
+			if (scopeType is not TypeRef tr)
 				return scopeType;
 			for (int i = 0; i < 100; i++) {
-				var dt = tr.ResolutionScope as TypeRef;
-				if (dt is null)
+				if (tr.ResolutionScope is not TypeRef dt)
 					return tr;
 				tr = dt;
 			}

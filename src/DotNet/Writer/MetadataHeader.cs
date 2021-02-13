@@ -152,7 +152,7 @@ namespace dnlib.DotNet.Writer {
 			int count = heaps.Count;
 			for (int i = 0; i < count; i++) {
 				var heap = heaps[i];
-				writer.WriteUInt32((uint)(heap.FileOffset - offset));
+				writer.WriteUInt32(heap.FileOffset - offset);
 				writer.WriteUInt32(heap.GetFileLength());
 				writer.WriteBytes(s = GetAsciizName(heap.Name));
 				if (s.Length > 32)

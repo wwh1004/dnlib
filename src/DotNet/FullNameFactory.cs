@@ -58,8 +58,7 @@ namespace dnlib.DotNet {
 			if (type is TypeDef td)
 				return td.Module != module;
 
-			var tr = type as TypeRef;
-			if (tr is null)
+			if (type is not TypeRef tr)
 				return true;
 			if (tr.ResolutionScope == AssemblyRef.CurrentAssembly)
 				return false;
@@ -1040,45 +1039,45 @@ namespace dnlib.DotNet {
 		}
 
 		void CreateFullName(ITypeDefOrRef typeDefOrRef) {
-			if (typeDefOrRef is TypeRef)
-				CreateFullName((TypeRef)typeDefOrRef);
-			else if (typeDefOrRef is TypeDef)
-				CreateFullName((TypeDef)typeDefOrRef);
-			else if (typeDefOrRef is TypeSpec)
-				CreateFullName((TypeSpec)typeDefOrRef);
+			if (typeDefOrRef is TypeRef tr)
+				CreateFullName(tr);
+			else if (typeDefOrRef is TypeDef td)
+				CreateFullName(td);
+			else if (typeDefOrRef is TypeSpec ts)
+				CreateFullName(ts);
 			else
 				sb.Append(NULLVALUE);
 		}
 
 		void CreateNamespace(ITypeDefOrRef typeDefOrRef, bool onlyNamespace) {
-			if (typeDefOrRef is TypeRef)
-				CreateNamespace((TypeRef)typeDefOrRef, onlyNamespace);
-			else if (typeDefOrRef is TypeDef)
-				CreateNamespace((TypeDef)typeDefOrRef, onlyNamespace);
-			else if (typeDefOrRef is TypeSpec)
-				CreateNamespace((TypeSpec)typeDefOrRef, onlyNamespace);
+			if (typeDefOrRef is TypeRef tr)
+				CreateNamespace(tr, onlyNamespace);
+			else if (typeDefOrRef is TypeDef td)
+				CreateNamespace(td, onlyNamespace);
+			else if (typeDefOrRef is TypeSpec ts)
+				CreateNamespace(ts, onlyNamespace);
 			else
 				sb.Append(NULLVALUE);
 		}
 
 		void CreateName(ITypeDefOrRef typeDefOrRef) {
-			if (typeDefOrRef is TypeRef)
-				CreateName((TypeRef)typeDefOrRef);
-			else if (typeDefOrRef is TypeDef)
-				CreateName((TypeDef)typeDefOrRef);
-			else if (typeDefOrRef is TypeSpec)
-				CreateName((TypeSpec)typeDefOrRef);
+			if (typeDefOrRef is TypeRef tr)
+				CreateName(tr);
+			else if (typeDefOrRef is TypeDef td)
+				CreateName(td);
+			else if (typeDefOrRef is TypeSpec ts)
+				CreateName(ts);
 			else
 				sb.Append(NULLVALUE);
 		}
 
 		void CreateAssemblyQualifiedName(ITypeDefOrRef typeDefOrRef) {
-			if (typeDefOrRef is TypeRef)
-				CreateAssemblyQualifiedName((TypeRef)typeDefOrRef);
-			else if (typeDefOrRef is TypeDef)
-				CreateAssemblyQualifiedName((TypeDef)typeDefOrRef);
-			else if (typeDefOrRef is TypeSpec)
-				CreateAssemblyQualifiedName((TypeSpec)typeDefOrRef);
+			if (typeDefOrRef is TypeRef tr)
+				CreateAssemblyQualifiedName(tr);
+			else if (typeDefOrRef is TypeDef td)
+				CreateAssemblyQualifiedName(td);
+			else if (typeDefOrRef is TypeSpec ts)
+				CreateAssemblyQualifiedName(ts);
 			else
 				sb.Append(NULLVALUE);
 		}
@@ -1364,7 +1363,7 @@ namespace dnlib.DotNet {
 						CreateFullName(((ModifierSig)typeSig).Modifier);
 					else
 						CreateName(((ModifierSig)typeSig).Modifier);
-					sb.Append(")");
+					sb.Append(')');
 				}
 				break;
 
@@ -1376,7 +1375,7 @@ namespace dnlib.DotNet {
 						CreateFullName(((ModifierSig)typeSig).Modifier);
 					else
 						CreateName(((ModifierSig)typeSig).Modifier);
-					sb.Append(")");
+					sb.Append(')');
 				}
 				break;
 
@@ -1544,10 +1543,10 @@ namespace dnlib.DotNet {
 		}
 
 		static string GetAssemblyName(IAssembly assembly) {
-			var pk = assembly.PublicKeyOrToken;
-			if (pk is PublicKey)
-				pk = ((PublicKey)pk).Token;
-			return Utils.GetAssemblyNameString(EscapeAssemblyName(assembly.Name), assembly.Version, assembly.Culture, pk, assembly.Attributes);
+			var pkt = assembly.PublicKeyOrToken;
+			if (pkt is PublicKey pk)
+				pkt = pk.Token;
+			return Utils.GetAssemblyNameString(EscapeAssemblyName(assembly.Name), assembly.Version, assembly.Culture, pkt, assembly.Attributes);
 		}
 
 		static string EscapeAssemblyName(UTF8String asmSimpleName) =>
@@ -1596,8 +1595,8 @@ namespace dnlib.DotNet {
 				sb.Append(NULLVALUE);
 			else {
 				var pkt = assembly.PublicKeyOrToken;
-				if (pkt is PublicKey)
-					pkt = ((PublicKey)pkt).Token;
+				if (pkt is PublicKey pk)
+					pkt = pk.Token;
 				sb.Append(Utils.GetAssemblyNameString(assembly.Name, assembly.Version, assembly.Culture, pkt, assembly.Attributes));
 			}
 		}
@@ -1686,16 +1685,16 @@ namespace dnlib.DotNet {
 			var scope = typeRef.ResolutionScope;
 			if (scope is null)
 				result = null;	//TODO: Check ownerModule's ExportedType table
-			else if (scope is TypeRef)
-				result = GetDefinitionAssembly((TypeRef)scope);
-			else if (scope is AssemblyRef)
-				result = (AssemblyRef)scope;
+			else if (scope is TypeRef tr)
+				result = GetDefinitionAssembly(tr);
+			else if (scope is AssemblyRef asmRef)
+				result = asmRef;
 			else if (scope is ModuleRef) {
 				var ownerModule = GetOwnerModule(typeRef);
 				result = ownerModule?.Assembly;
 			}
-			else if (scope is ModuleDef)
-				result = ((ModuleDef)scope).Assembly;
+			else if (scope is ModuleDef modDef)
+				result = modDef.Assembly;
 			else
 				result = null;	// Should never be reached
 

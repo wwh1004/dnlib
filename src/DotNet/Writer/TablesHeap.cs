@@ -343,7 +343,7 @@ namespace dnlib.DotNet.Writer {
 			foreach (var mdt in Tables) {
 				if (mdt.IsEmpty)
 					continue;
-				length += (uint)(4 + mdt.TableInfo.RowSize * mdt.Rows);
+				length += (uint)(4 + (mdt.TableInfo.RowSize * mdt.Rows));
 			}
 			if (options.ExtraData.HasValue)
 				length += 4;

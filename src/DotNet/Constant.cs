@@ -115,7 +115,7 @@ namespace dnlib.DotNet {
 		public ConstantMD(ModuleDefMD readerModule, uint rid) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.ConstantTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"Constant rid {rid} does not exist");
 #endif
@@ -162,7 +162,7 @@ namespace dnlib.DotNet {
 
 			case ElementType.I4:
 				if (reader.Length < 4)
-					return (int)0;
+					return 0;
 				return reader.ReadInt32();
 
 			case ElementType.U4:

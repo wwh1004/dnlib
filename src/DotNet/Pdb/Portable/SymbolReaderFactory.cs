@@ -69,19 +69,18 @@ namespace dnlib.DotNet.Pdb.Portable {
 				if (newVersion)
 					return null;
 				var decompressedBytes = new byte[uncompressedSize];
-				using (var deflateStream = new DeflateStream(reader.AsStream(), CompressionMode.Decompress)) {
-					int pos = 0;
-					while (pos < decompressedBytes.Length) {
-						int read = deflateStream.Read(decompressedBytes, pos, decompressedBytes.Length - pos);
-						if (read == 0)
-							break;
-						pos += read;
-					}
-					if (pos != decompressedBytes.Length)
-						return null;
-					var stream = ByteArrayDataReaderFactory.Create(decompressedBytes, filename: null);
-					return TryCreate(pdbContext, stream, isEmbeddedPortablePdb: true);
+				using var deflateStream = new DeflateStream(reader.AsStream(), CompressionMode.Decompress);
+				int pos = 0;
+				while (pos < decompressedBytes.Length) {
+					int read = deflateStream.Read(decompressedBytes, pos, decompressedBytes.Length - pos);
+					if (read == 0)
+						break;
+					pos += read;
 				}
+				if (pos != decompressedBytes.Length)
+					return null;
+				var stream = ByteArrayDataReaderFactory.Create(decompressedBytes, filename: null);
+				return TryCreate(pdbContext, stream, isEmbeddedPortablePdb: true);
 			}
 			catch (IOException) {
 			}

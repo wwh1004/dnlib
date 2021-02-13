@@ -187,7 +187,7 @@ namespace dnlib.DotNet {
 		public ModuleRefMD(ModuleDefMD readerModule, uint rid) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.ModuleRefTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"ModuleRef rid {rid} does not exist");
 #endif

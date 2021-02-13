@@ -358,7 +358,7 @@ namespace dnlib.DotNet.Writer {
 			// Image optional header
 			uint ep = StartupStub is null || !StartupStub.Enable ? 0 : (uint)StartupStub.EntryPointRVA;
 			if (Use32BitOptionalHeader()) {
-				writer.WriteUInt16((ushort)0x010B);
+				writer.WriteUInt16(0x010B);
 				writer.WriteByte(options.MajorLinkerVersion ?? PEHeadersOptions.DEFAULT_MAJOR_LINKER_VERSION);
 				writer.WriteByte(options.MinorLinkerVersion ?? PEHeadersOptions.DEFAULT_MINOR_LINKER_VERSION);
 				writer.WriteUInt32(sectionSizes.SizeOfCode);
@@ -391,7 +391,7 @@ namespace dnlib.DotNet.Writer {
 				writer.WriteUInt32(options.NumberOfRvaAndSizes ?? 0x00000010);
 			}
 			else {
-				writer.WriteUInt16((ushort)0x020B);
+				writer.WriteUInt16(0x020B);
 				writer.WriteByte(options.MajorLinkerVersion ?? PEHeadersOptions.DEFAULT_MAJOR_LINKER_VERSION);
 				writer.WriteByte(options.MinorLinkerVersion ?? PEHeadersOptions.DEFAULT_MINOR_LINKER_VERSION);
 				writer.WriteUInt32(sectionSizes.SizeOfCode);

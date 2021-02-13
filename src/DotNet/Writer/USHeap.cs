@@ -42,7 +42,7 @@ namespace dnlib.DotNet.Writer {
 		void Populate(ref DataReader reader) {
 			reader.Position = 1;
 			while (reader.Position < reader.Length) {
-				uint offset = (uint)reader.Position;
+				uint offset = reader.Position;
 				if (!reader.TryReadCompressedUInt32(out uint len)) {
 					if (offset == reader.Position)
 						reader.Position++;
@@ -123,10 +123,10 @@ namespace dnlib.DotNet.Writer {
 		}
 
 		void WriteString(DataWriter writer, string s) {
-			writer.WriteCompressedUInt32((uint)s.Length * 2 + 1);
+			writer.WriteCompressedUInt32(((uint)s.Length * 2) + 1);
 			byte last = 0;
 			for (int i = 0; i < s.Length; i++) {
-				ushort c = (ushort)s[i];
+				ushort c = s[i];
 				writer.WriteUInt16(c);
 				if (c > 0xFF || (1 <= c && c <= 8) || (0x0E <= c && c <= 0x1F) || c == 0x27 || c == 0x2D || c == 0x7F)
 					last = 1;
@@ -135,7 +135,7 @@ namespace dnlib.DotNet.Writer {
 		}
 
 		/// <inheritdoc/>
-		public int GetRawDataSize(string data) => DataWriter.GetCompressedUInt32Length((uint)data.Length * 2 + 1) + data.Length * 2 + 1;
+		public int GetRawDataSize(string data) => DataWriter.GetCompressedUInt32Length(((uint)data.Length * 2) + 1) + (data.Length * 2) + 1;
 
 		/// <inheritdoc/>
 		public void SetRawData(uint offset, byte[] rawData) {

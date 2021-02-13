@@ -337,12 +337,7 @@ namespace dnlib.PE {
 				creator.UnsafeDisableMemoryMappedIO();
 		}
 
-		bool IInternalPEImage.IsMemoryMappedIO {
-			get {
-				var creator = dataReaderFactory as MemoryMappedDataReaderFactory;
-				return creator is null ? false : creator.IsMemoryMappedIO;
-			}
-		}
+		bool IInternalPEImage.IsMemoryMappedIO => dataReaderFactory is MemoryMappedDataReaderFactory creator && creator.IsMemoryMappedIO;
 
 		ImageDebugDirectory[] ReadImageDebugDirectories() {
 			try {

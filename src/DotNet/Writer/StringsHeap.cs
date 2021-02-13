@@ -61,7 +61,7 @@ namespace dnlib.DotNet.Writer {
 		void Populate(ref DataReader reader) {
 			reader.Position = 1;
 			while (reader.Position < reader.Length) {
-				uint offset = (uint)reader.Position;
+				uint offset = reader.Position;
 				var bytes = reader.TryReadBytesUntil(0);
 				if (bytes is null)
 					break;

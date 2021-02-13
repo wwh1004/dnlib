@@ -90,8 +90,8 @@ namespace dnlib.DotNet {
 		/// <returns>A new <see cref="ITypeDefOrRef"/> instance</returns>
 		/// <exception cref="TypeNameParserException">If parsing failed</exception>
 		public static ITypeDefOrRef ParseReflectionThrow(ModuleDef ownerModule, string typeFullName, IAssemblyRefFinder typeNameParserHelper, GenericParamContext gpContext) {
-			using (var parser = new ReflectionTypeNameParser(ownerModule, typeFullName, typeNameParserHelper, gpContext))
-				return parser.Parse();
+			using var parser = new ReflectionTypeNameParser(ownerModule, typeFullName, typeNameParserHelper, gpContext);
+			return parser.Parse();
 		}
 
 		/// <summary>
@@ -142,8 +142,8 @@ namespace dnlib.DotNet {
 		/// <returns>A new <see cref="TypeSig"/> instance</returns>
 		/// <exception cref="TypeNameParserException">If parsing failed</exception>
 		public static TypeSig ParseAsTypeSigReflectionThrow(ModuleDef ownerModule, string typeFullName, IAssemblyRefFinder typeNameParserHelper, GenericParamContext gpContext) {
-			using (var parser = new ReflectionTypeNameParser(ownerModule, typeFullName, typeNameParserHelper, gpContext))
-				return parser.ParseAsTypeSig();
+			using var parser = new ReflectionTypeNameParser(ownerModule, typeFullName, typeNameParserHelper, gpContext);
+			return parser.ParseAsTypeSig();
 		}
 
 		/// <summary>
@@ -426,7 +426,7 @@ namespace dnlib.DotNet {
 				if (c == -1 || !(c >= '0' && c <= '9'))
 					break;
 				ReadChar();
-				uint newVal = val * 10 + (uint)(c - '0');
+				uint newVal = (val * 10) + (uint)(c - '0');
 				Verify(newVal >= val, "Integer overflow");
 				val = newVal;
 				readInt = true;
@@ -450,7 +450,7 @@ namespace dnlib.DotNet {
 				return -(int)val;
 			}
 			else {
-				Verify(val <= (uint)int.MaxValue, "Integer overflow");
+				Verify(val <= int.MaxValue, "Integer overflow");
 				return (int)val;
 			}
 		}
@@ -525,8 +525,8 @@ namespace dnlib.DotNet {
 		/// <returns>A new <see cref="AssemblyRef"/> instance or <c>null</c> if parsing failed</returns>
 		public static AssemblyRef ParseAssemblyRef(string asmFullName, GenericParamContext gpContext) {
 			try {
-				using (var parser = new ReflectionTypeNameParser(null, asmFullName, null, gpContext))
-					return parser.ReadAssemblyRef();
+				using var parser = new ReflectionTypeNameParser(null, asmFullName, null, gpContext);
+				return parser.ReadAssemblyRef();
 			}
 			catch {
 				return null;
@@ -656,7 +656,7 @@ namespace dnlib.DotNet {
 									}
 									else {
 										uint upper = ReadUInt32();
-										long lsize = (long)upper - (long)lower + 1;
+										long lsize = upper - lower + 1;
 										Verify(lsize > 0 && lsize <= 0x1FFFFFFF, "Invalid size");
 										size = (uint)lsize;
 									}

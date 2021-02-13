@@ -92,40 +92,38 @@ namespace dnlib.IO {
 			[DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
 			static extern SafeFileHandle CreateFileMapping(SafeFileHandle hFile, IntPtr lpAttributes, uint flProtect, uint dwMaximumSizeHigh, uint dwMaximumSizeLow, string lpName);
 
-			[DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
+			[DllImport("kernel32", SetLastError = true)]
 			static extern IntPtr MapViewOfFile(SafeFileHandle hFileMappingObject, uint dwDesiredAccess, uint dwFileOffsetHigh, uint dwFileOffsetLow, UIntPtr dwNumberOfBytesToMap);
 
-			[DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
+			[DllImport("kernel32", SetLastError = true)]
 			[return: MarshalAs(UnmanagedType.Bool)]
 			static extern bool UnmapViewOfFile(IntPtr lpBaseAddress);
 
-			[DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
+			[DllImport("kernel32", SetLastError = true)]
 			static extern uint GetFileSize(SafeFileHandle hFile, out uint lpFileSizeHigh);
 			const uint INVALID_FILE_SIZE = 0xFFFFFFFF;
 			const int NO_ERROR = 0;
 
 			public static void Mmap(MemoryMappedDataReaderFactory creator, bool mapAsImage) {
-				using (var fileHandle = CreateFile(creator.filename, GENERIC_READ, FILE_SHARE_READ, IntPtr.Zero, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, IntPtr.Zero)) {
-					if (fileHandle.IsInvalid)
-						throw new IOException($"Could not open file {creator.filename} for reading. Error: {Marshal.GetLastWin32Error():X8}");
+				using var fileHandle = CreateFile(creator.filename, GENERIC_READ, FILE_SHARE_READ, IntPtr.Zero, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, IntPtr.Zero);
+				if (fileHandle.IsInvalid)
+					throw new IOException($"Could not open file {creator.filename} for reading. Error: {Marshal.GetLastWin32Error():X8}");
 
-					uint sizeLo = GetFileSize(fileHandle, out uint sizeHi);
-					int hr;
-					if (sizeLo == INVALID_FILE_SIZE && (hr = Marshal.GetLastWin32Error()) != NO_ERROR)
-						throw new IOException($"Could not get file size. File: {creator.filename}, error: {hr:X8}");
-					var fileSize = ((long)sizeHi << 32) | sizeLo;
+				uint sizeLo = GetFileSize(fileHandle, out uint sizeHi);
+				int hr;
+				if (sizeLo == INVALID_FILE_SIZE && (hr = Marshal.GetLastWin32Error()) != NO_ERROR)
+					throw new IOException($"Could not get file size. File: {creator.filename}, error: {hr:X8}");
+				var fileSize = ((long)sizeHi << 32) | sizeLo;
 
-					using (var fileMapping = CreateFileMapping(fileHandle, IntPtr.Zero, PAGE_READONLY | (mapAsImage ? SEC_IMAGE : 0), 0, 0, null)) {
-						if (fileMapping.IsInvalid)
-							throw new MemoryMappedIONotSupportedException($"Could not create a file mapping object. File: {creator.filename}, error: {Marshal.GetLastWin32Error():X8}");
-						creator.data = MapViewOfFile(fileMapping, FILE_MAP_READ, 0, 0, UIntPtr.Zero);
-						if (creator.data == IntPtr.Zero)
-							throw new MemoryMappedIONotSupportedException($"Could not map file {creator.filename}. Error: {Marshal.GetLastWin32Error():X8}");
-						creator.length = (uint)fileSize;
-						creator.osType = OSType.Windows;
-						creator.stream = DataStreamFactory.Create((byte*)creator.data);
-					}
-				}
+				using var fileMapping = CreateFileMapping(fileHandle, IntPtr.Zero, PAGE_READONLY | (mapAsImage ? SEC_IMAGE : 0), 0, 0, null);
+				if (fileMapping.IsInvalid)
+					throw new MemoryMappedIONotSupportedException($"Could not create a file mapping object. File: {creator.filename}, error: {Marshal.GetLastWin32Error():X8}");
+				creator.data = MapViewOfFile(fileMapping, FILE_MAP_READ, 0, 0, UIntPtr.Zero);
+				if (creator.data == IntPtr.Zero)
+					throw new MemoryMappedIONotSupportedException($"Could not map file {creator.filename}. Error: {Marshal.GetLastWin32Error():X8}");
+				creator.length = (uint)fileSize;
+				creator.osType = OSType.Windows;
+				creator.stream = DataStreamFactory.Create((byte*)creator.data);
 			}
 
 			public static void Dispose(IntPtr addr) {

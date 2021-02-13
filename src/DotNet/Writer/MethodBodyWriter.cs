@@ -80,9 +80,7 @@ namespace dnlib.DotNet.Writer {
 			this.keepMaxStack = keepMaxStack;
 		}
 
-		internal MethodBodyWriter(ITokenProvider helper) {
-			this.helper = helper;
-		}
+		internal MethodBodyWriter(ITokenProvider helper) => this.helper = helper;
 
 		internal void Reset(CilBody cilBody, bool keepMaxStack) {
 			Reset(cilBody.Instructions, cilBody.ExceptionHandlers);
@@ -217,9 +215,9 @@ namespace dnlib.DotNet.Writer {
 				numExceptionHandlers = maxExceptionHandlers;
 			}
 
-			var data = new byte[numExceptionHandlers * 24 + 4];
+			var data = new byte[(numExceptionHandlers * 24) + 4];
 			var writer = new ArrayWriter(data);
-			writer.WriteUInt32((((uint)numExceptionHandlers * 24 + 4) << 8) | 0x41);
+			writer.WriteUInt32(((((uint)numExceptionHandlers * 24) + 4) << 8) | 0x41);
 			for (int i = 0; i < numExceptionHandlers; i++) {
 				var eh = exceptionHandlers[i];
 				uint offs1, offs2;
@@ -262,9 +260,9 @@ namespace dnlib.DotNet.Writer {
 				numExceptionHandlers = maxExceptionHandlers;
 			}
 
-			var data = new byte[numExceptionHandlers * 12 + 4];
+			var data = new byte[(numExceptionHandlers * 12) + 4];
 			var writer = new ArrayWriter(data);
-			writer.WriteUInt32((((uint)numExceptionHandlers * 12 + 4) << 8) | 1);
+			writer.WriteUInt32(((((uint)numExceptionHandlers * 12) + 4) << 8) | 1);
 			for (int i = 0; i < numExceptionHandlers; i++) {
 				var eh = exceptionHandlers[i];
 				uint offs1, offs2;

@@ -29,17 +29,15 @@ namespace dnlib.DotNet.Writer {
 		/// <param name="ca">The custom attribute</param>
 		/// <returns>Custom attribute blob</returns>
 		public static byte[] Write(ICustomAttributeWriterHelper helper, CustomAttribute ca) {
-			using (var writer = new CustomAttributeWriter(helper)) {
-				writer.Write(ca);
-				return writer.GetResult();
-			}
+			using var writer = new CustomAttributeWriter(helper);
+			writer.Write(ca);
+			return writer.GetResult();
 		}
 
 		internal static byte[] Write(ICustomAttributeWriterHelper helper, CustomAttribute ca, DataWriterContext context) {
-			using (var writer = new CustomAttributeWriter(helper, context)) {
-				writer.Write(ca);
-				return writer.GetResult();
-			}
+			using var writer = new CustomAttributeWriter(helper, context);
+			writer.Write(ca);
+			return writer.GetResult();
 		}
 
 		/// <summary>
@@ -49,17 +47,15 @@ namespace dnlib.DotNet.Writer {
 		/// <param name="namedArgs">Named arguments</param>
 		/// <returns>The named args blob</returns>
 		internal static byte[] Write(ICustomAttributeWriterHelper helper, IList<CANamedArgument> namedArgs) {
-			using (var writer = new CustomAttributeWriter(helper)) {
-				writer.Write(namedArgs);
-				return writer.GetResult();
-			}
+			using var writer = new CustomAttributeWriter(helper);
+			writer.Write(namedArgs);
+			return writer.GetResult();
 		}
 
 		internal static byte[] Write(ICustomAttributeWriterHelper helper, IList<CANamedArgument> namedArgs, DataWriterContext context) {
-			using (var writer = new CustomAttributeWriter(helper, context)) {
-				writer.Write(namedArgs);
-				return writer.GetResult();
-			}
+			using var writer = new CustomAttributeWriter(helper, context);
+			writer.Write(namedArgs);
+			return writer.GetResult();
 		}
 
 		CustomAttributeWriter(ICustomAttributeWriterHelper helper) {
@@ -122,13 +118,13 @@ namespace dnlib.DotNet.Writer {
 				genericArguments.PushTypeArgs(gis.GenericArguments);
 			}
 
-			writer.WriteUInt16((ushort)1);
+			writer.WriteUInt16(1);
 
 			int numArgs = Math.Min(methodSig.Params.Count, ca.ConstructorArguments.Count);
 			for (int i = 0; i < numArgs; i++)
 				WriteValue(FixTypeSig(methodSig.Params[i]), ca.ConstructorArguments[i]);
 
-			int numNamedArgs = Math.Min((int)ushort.MaxValue, ca.NamedArguments.Count);
+			int numNamedArgs = Math.Min(ushort.MaxValue, ca.NamedArguments.Count);
 			writer.WriteUInt16((ushort)numNamedArgs);
 			for (int i = 0; i < numNamedArgs; i++)
 				Write(ca.NamedArguments[i]);
@@ -254,7 +250,7 @@ namespace dnlib.DotNet.Writer {
 				return true;
 
 			case TypeCode.Char:
-				result = (ushort)(char)o;
+				result = (char)o;
 				return true;
 
 			case TypeCode.SByte:
@@ -319,7 +315,7 @@ namespace dnlib.DotNet.Writer {
 				return true;
 
 			case TypeCode.Char:
-				result = (ushort)(char)o;
+				result = (char)o;
 				return true;
 
 			case TypeCode.SByte:
@@ -398,7 +394,7 @@ namespace dnlib.DotNet.Writer {
 				if (!VerifyTypeAndValue(value, ElementType.Char))
 					writer.WriteUInt16((ushort)ToUInt64(value.Value));
 				else
-					writer.WriteUInt16((ushort)(char)value.Value);
+					writer.WriteUInt16((char)value.Value);
 				break;
 
 			case ElementType.I1:
@@ -559,7 +555,7 @@ namespace dnlib.DotNet.Writer {
 				return false;
 			switch (Type.GetTypeCode(o.GetType())) {
 			case TypeCode.Boolean:	writer.WriteBoolean((bool)o); break;
-			case TypeCode.Char:		writer.WriteUInt16((ushort)(char)o); break;
+			case TypeCode.Char:		writer.WriteUInt16((char)o); break;
 			case TypeCode.SByte:	writer.WriteSByte((sbyte)o); break;
 			case TypeCode.Byte:		writer.WriteByte((byte)o); break;
 			case TypeCode.Int16:	writer.WriteInt16((short)o); break;
@@ -703,7 +699,7 @@ namespace dnlib.DotNet.Writer {
 
 			default:
 				helper.Error("Custom attribute: Invalid type");
-				writer.WriteByte((byte)0xFF);
+				writer.WriteByte(0xFF);
 				break;
 			}
 
@@ -720,8 +716,7 @@ namespace dnlib.DotNet.Writer {
 		}
 
 		static bool CheckCorLibType(TypeSig ts, string name) {
-			var tdrs = ts as TypeDefOrRefSig;
-			if (tdrs is null)
+			if (ts is not TypeDefOrRefSig tdrs)
 				return false;
 			return CheckCorLibType(tdrs.TypeDefOrRef, name);
 		}
@@ -740,7 +735,7 @@ namespace dnlib.DotNet.Writer {
 
 		void WriteUTF8String(UTF8String s) {
 			if (s is null || s.Data is null)
-				writer.WriteByte((byte)0xFF);
+				writer.WriteByte(0xFF);
 			else {
 				writer.WriteCompressedUInt32((uint)s.Data.Length);
 				writer.WriteBytes(s.Data);

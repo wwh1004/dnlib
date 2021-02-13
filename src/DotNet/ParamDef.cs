@@ -390,7 +390,7 @@ namespace dnlib.DotNet {
 		public ParamDefMD(ModuleDefMD readerModule, uint rid) {
 #if DEBUG
 			if (readerModule is null)
-				throw new ArgumentNullException("readerModule");
+				throw new ArgumentNullException(nameof(readerModule));
 			if (readerModule.TablesStream.ParamTable.IsInvalidRID(rid))
 				throw new BadImageFormatException($"Param rid {rid} does not exist");
 #endif
