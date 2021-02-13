@@ -1999,7 +1999,7 @@ namespace dnlib.DotNet.Writer {
 					var cilBody = method.Body;
 					if (cilBody is not null) {
 						if (!(cilBody.Instructions.Count == 0 && cilBody.Variables.Count == 0)) {
-							writer.Reset(cilBody, keepMaxStack || cilBody.KeepOldMaxStack);
+							writer.Reset(method, keepMaxStack || cilBody.KeepOldMaxStack);
 							writer.Write();
 							var origRva = method.RVA;
 							uint origSize = cilBody.MetadataBodySize;

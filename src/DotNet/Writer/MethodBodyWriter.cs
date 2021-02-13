@@ -31,6 +31,7 @@ namespace dnlib.DotNet.Writer {
 	/// </summary>
 	public sealed class MethodBodyWriter : MethodBodyWriterBase {
 		readonly ITokenProvider helper;
+		MethodDef method;
 		CilBody cilBody;
 		bool keepMaxStack;
 		uint codeSize;
@@ -80,7 +81,41 @@ namespace dnlib.DotNet.Writer {
 			this.keepMaxStack = keepMaxStack;
 		}
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="helper">Helps this instance</param>
+		/// <param name="method">The method</param>
+		public MethodBodyWriter(ITokenProvider helper, MethodDef method)
+			: this(helper, method, false) {
+		}
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="helper">Helps this instance</param>
+		/// <param name="method">The method</param>
+		/// <param name="keepMaxStack">Keep the original max stack value that has been initialized
+		/// in <paramref name="method"/>.Body</param>
+		public MethodBodyWriter(ITokenProvider helper, MethodDef method, bool keepMaxStack) {
+			if (!method.HasBody)
+				throw new ArgumentException($"{nameof(method)} doesn't have a {nameof(CilBody)}");
+
+			var cilBody = method.Body;
+			instructions = cilBody.Instructions;
+			exceptionHandlers = cilBody.ExceptionHandlers;
+			this.helper = helper;
+			this.method = method;
+			this.cilBody = cilBody;
+			this.keepMaxStack = keepMaxStack;
+		}
+
 		internal MethodBodyWriter(ITokenProvider helper) => this.helper = helper;
+
+		internal void Reset(MethodDef method, bool keepMaxStack) {
+			this.method = method;
+			Reset(method.Body, keepMaxStack);
+		}
 
 		internal void Reset(CilBody cilBody, bool keepMaxStack) {
 			Reset(cilBody.Instructions, cilBody.ExceptionHandlers);
@@ -297,7 +332,7 @@ namespace dnlib.DotNet.Writer {
 		}
 
 		/// <inheritdoc/>
-		protected override void ErrorImpl(string message) => helper.Error(message);
+		protected override void ErrorImpl(string message) => helper.Error(method is not null ? $"{message} at '{method}' (0x{method.MDToken.Raw:X8})" : message);
 
 		/// <inheritdoc/>
 		protected override void WriteInlineField(ref ArrayWriter writer, Instruction instr) => writer.WriteUInt32(helper.GetToken(instr.Operand).Raw);
