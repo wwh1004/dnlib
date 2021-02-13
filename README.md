@@ -1,4 +1,4 @@
-# dnlib [![NuGet](https://img.shields.io/nuget/v/dnlib.svg)](https://www.nuget.org/packages/dnlib/) [![](https://github.com/0xd4d/dnlib/workflows/GitHub%20CI/badge.svg)](https://github.com/0xd4d/dnlib/actions)
+# dnlib [![NuGet](https://img.shields.io/nuget/v/dnlib-wwh.svg)](https://www.nuget.org/packages/dnlib-wwh/) [![](https://github.com/wwh1004/dnlib/workflows/GitHub%20CI/badge.svg)](https://github.com/wwh1004/dnlib/actions)
 
 .NET module/assembly reader/writer library
 
