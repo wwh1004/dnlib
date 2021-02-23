@@ -2127,7 +2127,12 @@ namespace dnlib.DotNet.Writer {
 		}
 
 		/// <inheritdoc/>
-		public MDToken GetToken(object o) {
+		public MDToken GetToken(object o) => GetTokenImpl(o, null);
+
+		MDToken ITokenProvider.GetToken(object o, MethodDef method) => GetTokenImpl(o, method);
+
+		/// <inheritdoc/>
+		protected virtual MDToken GetTokenImpl(object o, MethodDef method) {
 			if (o is IMDTokenProvider tp)
 				return new MDToken(tp.MDToken.Table, AddMDTokenProvider(tp));
 
@@ -2140,15 +2145,28 @@ namespace dnlib.DotNet.Writer {
 			if (o is FieldSig fieldSig)
 				return new MDToken(Table.StandAloneSig, AddStandAloneSig(fieldSig, 0));
 
-			if (o is null)
-				Error("Instruction operand is null");
-			else
-				Error("Invalid instruction operand");
+			if (method is not null) {
+				if (o is null)
+					Error("Instruction operand is null at '{0}' (0x{1:X8})", method, method.MDToken.Raw);
+				else
+					Error("Invalid instruction operand at '{0}' (0x{1:X8})", method, method.MDToken.Raw);
+			}
+			else {
+				if (o is null)
+					Error("Instruction operand is null");
+				else
+					Error("Invalid instruction operand");
+			}
 			return new MDToken((Table)0xFF, 0x00FFFFFF);
 		}
 
 		/// <inheritdoc/>
-		public virtual MDToken GetToken(IList<TypeSig> locals, uint origToken) {
+		public virtual MDToken GetToken(IList<TypeSig> locals, uint origToken) => GetTokenImpl(locals, origToken, null);
+
+		MDToken ITokenProvider.GetToken(IList<TypeSig> locals, uint origToken, MethodDef method) => GetTokenImpl(locals, origToken, method);
+
+		/// <inheritdoc/>
+		protected virtual MDToken GetTokenImpl(IList<TypeSig> locals, uint origToken, MethodDef method) {
 			if (locals is null || locals.Count == 0)
 				return new MDToken(0, 0);
 
