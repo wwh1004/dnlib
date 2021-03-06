@@ -19,10 +19,10 @@
     <AssemblyName>dnlib</AssemblyName>
     <PackageId>dnlib-wwh</PackageId>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>3.3.3</Version>
+    <Version>3.3.4</Version>
     <InformationalVersion>$(Version)</InformationalVersion>
     <Authors>0xd4d</Authors>
-    <PackageProjectUrl>https://github.com/0xd4d/dnlib</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/wwh1004/dnlib</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageVersion>$(InformationalVersion)</PackageVersion>
     <PackageTags>dotnet;assembly;module;reader;writer;PDB;PortablePdb;WindowsPdb;IL;CIL;MSIL;metadata</PackageTags>

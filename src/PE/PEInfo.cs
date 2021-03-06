@@ -89,11 +89,11 @@ namespace dnlib.PE {
 		/// </summary>
 		/// <param name="offset">The file offset to convert</param>
 		/// <returns>The RVA</returns>
-		public RVA ToRVA(FileOffset offset) {
+		public RVA? ToRVA(FileOffset offset) {
 			var section = ToImageSectionHeader(offset);
 			if (section is not null)
 				return (uint)(offset - section.PointerToRawData) + section.VirtualAddress;
-			return (RVA)offset;
+			return null;
 		}
 
 		/// <summary>
@@ -101,11 +101,14 @@ namespace dnlib.PE {
 		/// </summary>
 		/// <param name="rva">The RVA to convert</param>
 		/// <returns>The file offset</returns>
-		public FileOffset ToFileOffset(RVA rva) {
+		public FileOffset? ToFileOffset(RVA rva) {
 			var section = ToImageSectionHeader(rva);
-			if (section is not null)
-				return (FileOffset)(rva - section.VirtualAddress + section.PointerToRawData);
-			return (FileOffset)rva;
+			if (section is not null) {
+				uint offset = rva - section.VirtualAddress + section.PointerToRawData;
+				if (section.PointerToRawData <= offset && offset < section.PointerToRawData + section.SizeOfRawData)
+					return (FileOffset)offset;
+			}
+			return null;
 		}
 
 		static ulong AlignUp(ulong val, uint alignment) => (val + alignment - 1) & ~(alignment - 1);

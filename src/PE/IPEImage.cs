@@ -11,18 +11,34 @@ namespace dnlib.PE {
 	/// </summary>
 	public interface IRvaFileOffsetConverter {
 		/// <summary>
-		/// Converts a <see cref="FileOffset"/> to an <see cref="RVA"/>
+		/// Converts a <see cref="FileOffset"/> to an <see cref="RVA"/>, returns 0 if out of range
 		/// </summary>
 		/// <param name="offset">The file offset to convert</param>
 		/// <returns>The RVA</returns>
 		RVA ToRVA(FileOffset offset);
 
 		/// <summary>
-		/// Converts an <see cref="RVA"/> to a <see cref="FileOffset"/>
+		/// Try converting a <see cref="FileOffset"/> to an <see cref="RVA"/>
+		/// </summary>
+		/// <param name="offset">The file offset to convert</param>
+		/// <param name="rva">The RVA</param>
+		/// <returns></returns>
+		bool TryToRVA(FileOffset offset, out RVA rva);
+
+		/// <summary>
+		/// Converts an <see cref="RVA"/> to a <see cref="FileOffset"/>, returns 0 if out of range
 		/// </summary>
 		/// <param name="rva">The RVA to convert</param>
 		/// <returns>The file offset</returns>
 		FileOffset ToFileOffset(RVA rva);
+
+		/// <summary>
+		/// Try converting an <see cref="RVA"/> to a <see cref="FileOffset"/>
+		/// </summary>
+		/// <param name="rva">The RVA to convert</param>
+		/// <param name="offset">The file offset</param>
+		/// <returns></returns>
+		bool TryToFileOffset(RVA rva, out FileOffset offset);
 	}
 
 	/// <summary>

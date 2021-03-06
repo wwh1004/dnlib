@@ -45,13 +45,13 @@ namespace dnlib.PE {
 #endif
 
 		sealed class FilePEType : IPEType {
-			public RVA ToRVA(PEInfo peInfo, FileOffset offset) => peInfo.ToRVA(offset);
-			public FileOffset ToFileOffset(PEInfo peInfo, RVA rva) => peInfo.ToFileOffset(rva);
+			public RVA? ToRVA(PEInfo peInfo, FileOffset offset) => peInfo.ToRVA(offset);
+			public FileOffset? ToFileOffset(PEInfo peInfo, RVA rva) => peInfo.ToFileOffset(rva);
 		}
 
 		sealed class MemoryPEType : IPEType {
-			public RVA ToRVA(PEInfo peInfo, FileOffset offset) => (RVA)offset;
-			public FileOffset ToFileOffset(PEInfo peInfo, RVA rva) => (FileOffset)rva;
+			public RVA? ToRVA(PEInfo peInfo, FileOffset offset) => (RVA)offset;
+			public FileOffset? ToFileOffset(PEInfo peInfo, RVA rva) => (FileOffset)rva;
 		}
 
 		/// <inheritdoc/>
@@ -298,10 +298,24 @@ namespace dnlib.PE {
 		}
 
 		/// <inheritdoc/>
-		public RVA ToRVA(FileOffset offset) => peType.ToRVA(peInfo, offset);
+		public RVA ToRVA(FileOffset offset) => peType.ToRVA(peInfo, offset) ?? 0;
 
 		/// <inheritdoc/>
-		public FileOffset ToFileOffset(RVA rva) => peType.ToFileOffset(peInfo, rva);
+		public bool TryToRVA(FileOffset offset, out RVA rva) {
+			var r = peType.ToRVA(peInfo, offset);
+			rva = r ?? 0;
+			return r.HasValue;
+		}
+
+		/// <inheritdoc/>
+		public FileOffset ToFileOffset(RVA rva) => peType.ToFileOffset(peInfo, rva) ?? 0;
+
+		/// <inheritdoc/>
+		public bool TryToFileOffset(RVA rva, out FileOffset offset) {
+			var o = peType.ToFileOffset(peInfo, rva);
+			offset = o ?? 0;
+			return o.HasValue;
+		}
 
 		/// <inheritdoc/>
 		public void Dispose() {

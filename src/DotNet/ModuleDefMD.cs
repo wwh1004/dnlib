@@ -1297,7 +1297,10 @@ namespace dnlib.DotNet {
 			// 4-byte aligned. All fat method bodies should be 4-byte aligned, but the CLR doesn't
 			// seem to verify it. We must parse the method exactly the way the CLR parses it.
 			var reader = metadata.PEImage.CreateReader();
-			reader.Position = (uint)metadata.PEImage.ToFileOffset(rva);
+			if (!metadata.PEImage.TryToFileOffset(rva, out var offset))
+				return new CilBody();
+
+			reader.Position = (uint)offset;
 			return MethodBodyReader.CreateCilBody(this, reader, parameters, gpContext, Context);
 		}
 
