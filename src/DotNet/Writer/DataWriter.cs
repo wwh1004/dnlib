@@ -40,7 +40,7 @@ namespace dnlib.DotNet.Writer {
 		/// Writes a <see cref="bool"/>
 		/// </summary>
 		/// <param name="value">Value</param>
-		public void WriteBoolean(bool value) => stream.WriteByte(value ? 1 : 0);
+		public void WriteBoolean(bool value) => stream.WriteByte(value ? (byte)1 : (byte)0);
 
 		/// <summary>
 		/// Writes a <see cref="sbyte"/>
