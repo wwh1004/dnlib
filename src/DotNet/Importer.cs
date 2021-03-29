@@ -655,25 +655,8 @@ namespace dnlib.DotNet {
 				origField = fieldInfo;
 			}
 
-			MemberRef fieldRef;
-			if (origField.FieldType.ContainsGenericParameters) {
-				var origDeclType = origField.DeclaringType;
-				var asm = module.Context.AssemblyResolver.Resolve(origDeclType.Module.Assembly.GetName(), module);
-				if (asm is null || asm.FullName != origDeclType.Assembly.FullName)
-					throw new Exception("Couldn't resolve the correct assembly");
-				if (asm.FindModule(origDeclType.Module.ScopeName) is not ModuleDefMD mod)
-					throw new Exception("Couldn't resolve the correct module");
-				var fieldDef = mod.ResolveField((uint)(origField.MetadataToken & 0x00FFFFFF));
-				if (fieldDef is null)
-					throw new Exception("Couldn't resolve the correct field");
-
-				var fieldSig = new FieldSig(Import(fieldDef.FieldSig.GetFieldType()));
-				fieldRef = module.UpdateRowId(new MemberRefUser(module, fieldInfo.Name, fieldSig, parent));
-			}
-			else {
-				var fieldSig = new FieldSig(ImportAsTypeSig(fieldInfo.FieldType, fieldInfo.GetRequiredCustomModifiers(), fieldInfo.GetOptionalCustomModifiers()));
-				fieldRef = module.UpdateRowId(new MemberRefUser(module, fieldInfo.Name, fieldSig, parent));
-			}
+			var fieldSig = new FieldSig(ImportAsTypeSig(origField.FieldType, origField.GetRequiredCustomModifiers(), origField.GetOptionalCustomModifiers()));
+			var fieldRef = module.UpdateRowId(new MemberRefUser(module, fieldInfo.Name, fieldSig, parent));
 			field = TryResolveField(fieldRef);
 			if (FixSignature && !forceFixSignature) {
 				//TODO:
