@@ -86,7 +86,23 @@ namespace dnlib.DotNet {
 		/// </summary>
 		/// <param name="source"><see cref="Type"/> to create <see cref="TypeRef"/> for.</param>
 		/// <returns><see cref="TypeRef"/> or null to use default <see cref="Importer"/>'s type resolution</returns>
-		public virtual TypeRef Map(Type source) => null;
+		public virtual ITypeDefOrRef Map(Type source) => null;
+
+		/// <summary>
+		/// Overrides default behavior of <see cref="Importer.Import(FieldInfo)"/>
+		/// May be used to use reference assemblies for <see cref="FieldInfo"/> resolution, for example.
+		/// </summary>
+		/// <param name="source"><see cref="Type"/> to create <see cref="TypeRef"/> for.</param>
+		/// <returns><see cref="FieldDef"/> or null to use default <see cref="Importer"/>'s type resolution</returns>
+		public virtual IField Map(FieldInfo source) => null;
+
+		/// <summary>
+		/// Overrides default behavior of <see cref="Importer.Import(MethodBase)"/>
+		/// May be used to use reference assemblies for <see cref="MethodBase"/> resolution, for example.
+		/// </summary>
+		/// <param name="source"><see cref="Type"/> to create <see cref="TypeRef"/> for.</param>
+		/// <returns><see cref="MethodDef"/> or null to use default <see cref="Importer"/>'s type resolution</returns>
+		public virtual IMethodDefOrRef Map(MethodBase source) => null;
 	}
 
 	/// <summary>
@@ -149,6 +165,16 @@ namespace dnlib.DotNet {
 		/// <param name="gpContext">Generic parameter context</param>
 		public Importer(ModuleDef module, ImporterOptions options, GenericParamContext gpContext)
 			: this(module, options, gpContext, null) {
+		}
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="module">The module that will own all references</param>
+		/// <param name="options">Importer options</param>
+		/// <param name="mapper">Mapper for renamed entities</param>
+		public Importer(ModuleDef module, ImporterOptions options, ImportMapper mapper)
+			: this(module, options, default, mapper) {
 		}
 
 		/// <summary>
@@ -260,6 +286,8 @@ namespace dnlib.DotNet {
 				return null;
 			}
 		}
+
+		ITypeDefOrRef TryResolve(ITypeDefOrRef tdr) => tdr is TypeRef tr ? TryResolve(tr) : tdr;
 
 		ITypeDefOrRef TryResolve(TypeRef tr) {
 			if (!TryToUseTypeDefs || tr is null)
@@ -451,13 +479,16 @@ namespace dnlib.DotNet {
 			if (methodBase is null)
 				return null;
 
+			var method = mapper?.Map(methodBase);
+			if (method is not null)
+				return method;
+
 			if (forceFixSignature) {
 				//TODO:
 			}
 
 			bool isMethodSpec = methodBase.IsGenericButNotGenericMethodDefinition();
 			if (isMethodSpec) {
-				IMethodDefOrRef method;
 				var origMethod = methodBase.Module.ResolveMethod(methodBase.MetadataToken);
 				if (methodBase.DeclaringType.GetElementType2() == ElementType.GenericInst)
 					method = module.UpdateRowId(new MemberRefUser(module, methodBase.Name, CreateMethodSig(origMethod), ImportDeclaringType(methodBase.DeclaringType)));
@@ -596,6 +627,10 @@ namespace dnlib.DotNet {
 			if (fieldInfo is null)
 				return null;
 
+			var field = mapper?.Map(fieldInfo);
+			if (field is not null)
+				return field;
+
 			if (forceFixSignature) {
 				//TODO:
 			}
@@ -639,7 +674,7 @@ namespace dnlib.DotNet {
 				var fieldSig = new FieldSig(ImportAsTypeSig(fieldInfo.FieldType, fieldInfo.GetRequiredCustomModifiers(), fieldInfo.GetOptionalCustomModifiers()));
 				fieldRef = module.UpdateRowId(new MemberRefUser(module, fieldInfo.Name, fieldSig, parent));
 			}
-			var field = TryResolveField(fieldRef);
+			field = TryResolveField(fieldRef);
 			if (FixSignature && !forceFixSignature) {
 				//TODO:
 			}
