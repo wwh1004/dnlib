@@ -25,6 +25,11 @@ namespace dnlib.DotNet.Emit {
 		public uint Offset;
 
 		/// <summary>
+		/// Index of the instruction instruction list
+		/// </summary>
+		public int Index;
+
+		/// <summary>
 		/// PDB sequence point or <c>null</c> if none
 		/// </summary>
 		public SequencePoint SequencePoint;
@@ -789,6 +794,13 @@ namespace dnlib.DotNet.Emit {
 		/// <param name="self">this</param>
 		/// <returns></returns>
 		public static uint GetOffset(this Instruction self) => self?.Offset ?? 0;
+
+		/// <summary>
+		/// Gets the index or 0 if <paramref name="self"/> is <c>null</c>
+		/// </summary>
+		/// <param name="self">this</param>
+		/// <returns></returns>
+		public static int GetIndex(this Instruction self) => self?.Index ?? 0;
 
 		/// <summary>
 		/// Gets the sequence point or <c>null</c> if <paramref name="self"/> is <c>null</c>
