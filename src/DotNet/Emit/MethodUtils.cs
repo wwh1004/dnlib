@@ -497,6 +497,23 @@ namespace dnlib.DotNet.Emit {
 		}
 
 		/// <summary>
+		/// Updates each instruction's offset and index
+		/// </summary>
+		/// <param name="instructions">All instructions</param>
+		/// <returns>Total size in bytes of all instructions</returns>
+		public static uint UpdateInstructions(this IList<Instruction> instructions) {
+			uint offset = 0;
+			int count = instructions.Count;
+			for (int i = 0; i < count; i++) {
+				var instr = instructions[i];
+				instr.Offset = offset;
+				instr.Index = i;
+				offset += (uint)instr.GetSize();
+			}
+			return offset;
+		}
+
+		/// <summary>
 		/// Updates each instruction's offset
 		/// </summary>
 		/// <param name="instructions">All instructions</param>
@@ -510,6 +527,16 @@ namespace dnlib.DotNet.Emit {
 				offset += (uint)instr.GetSize();
 			}
 			return offset;
+		}
+
+		/// <summary>
+		/// Updates each instruction's index
+		/// </summary>
+		/// <param name="instructions">All instructions</param>
+		public static void UpdateInstructionIndexes(this IList<Instruction> instructions) {
+			int count = instructions.Count;
+			for (int i = 0; i < count; i++)
+				instructions[i].Index = i;
 		}
 	}
 }

@@ -208,9 +208,20 @@ namespace dnlib.DotNet.Emit {
 		public void OptimizeBranches() => instructions.OptimizeBranches();
 
 		/// <summary>
+		/// Updates each instruction's offset and index
+		/// </summary>
+		/// <returns>Total size in bytes of all instructions</returns>
+		public uint UpdateInstructions() => instructions.UpdateInstructions();
+
+		/// <summary>
 		/// Updates each instruction's offset
 		/// </summary>
 		/// <returns>Total size in bytes of all instructions</returns>
 		public uint UpdateInstructionOffsets() => instructions.UpdateInstructionOffsets();
+
+		/// <summary>
+		/// Updates each instruction's index
+		/// </summary>
+		public void UpdateInstructionIndexes() => instructions.UpdateInstructionIndexes();
 	}
 }

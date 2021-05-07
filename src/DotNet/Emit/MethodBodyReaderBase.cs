@@ -20,6 +20,7 @@ namespace dnlib.DotNet.Emit {
 		/// <summary>All exception handlers</summary>
 		protected IList<ExceptionHandler> exceptionHandlers = new List<ExceptionHandler>();
 		uint currentOffset;
+		int currentIndex;
 		/// <summary>First byte after the end of the code</summary>
 		protected uint codeEndOffs;
 		/// <summary>Start offset of method</summary>
@@ -124,6 +125,7 @@ namespace dnlib.DotNet.Emit {
 			codeEndOffs = reader.Length;	// We don't know the end pos so use the last one
 			this.instructions = new List<Instruction>(numInstrs);
 			currentOffset = 0;
+			currentIndex = 0;
 			var instructions = this.instructions;
 			for (int i = 0; i < numInstrs && reader.Position < codeEndOffs; i++)
 				instructions.Add(ReadOneInstruction());
@@ -142,6 +144,7 @@ namespace dnlib.DotNet.Emit {
 
 			this.instructions = new List<Instruction>();	//TODO: Estimate number of instructions based on codeSize
 			currentOffset = 0;
+			currentIndex = 0;
 			var instructions = this.instructions;
 			while (reader.Position < codeEndOffs)
 				instructions.Add(ReadOneInstruction());
@@ -217,6 +220,7 @@ namespace dnlib.DotNet.Emit {
 		Instruction ReadOneInstruction() {
 			var instr = new Instruction();
 			instr.Offset = currentOffset;
+			instr.Index = currentIndex++;
 			instr.OpCode = ReadOpCode();
 			instr.Operand = ReadOperand(instr);
 
