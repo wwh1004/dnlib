@@ -339,7 +339,12 @@ namespace dnlib.DotNet.Writer {
 		MDToken GetToken(IList<TypeSig> locals, uint origToken) => helper.GetToken(locals, origToken, method);
 
 		/// <inheritdoc/>
-		protected override void ErrorImpl(string message) => helper.Error(method is not null ? $"{message} at '{method}' (0x{method.MDToken.Raw:X8})" : message);
+		protected override void ErrorImpl(string message) {
+			if (method is not null)
+				helper.Error("{0} at '{1}' (0x{2:X8})", message, method.FullName, method.MDToken.Raw);
+			else
+				helper.Error(message);
+		}
 
 		/// <inheritdoc/>
 		protected override void WriteInlineField(ref ArrayWriter writer, Instruction instr) => writer.WriteUInt32(GetToken(instr.Operand).Raw);

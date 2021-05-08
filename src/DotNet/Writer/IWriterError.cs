@@ -12,5 +12,13 @@ namespace dnlib.DotNet.Writer {
 		/// </summary>
 		/// <param name="message">Error message</param>
 		void Error(string message);
+
+		/// <summary>
+		/// Called when an error is detected (eg. a null pointer or other invalid value). The error
+		/// can be ignored but the written data won't be valid.
+		/// </summary>
+		/// <param name="message">Error message</param>
+		/// <param name="args">Error message args</param>
+		void Error(string message, params object[] args);
 	}
 }

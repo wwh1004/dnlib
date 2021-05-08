@@ -3583,6 +3583,9 @@ namespace dnlib.DotNet.Writer {
 		void IWriterError.Error(string message) => Error(message);
 
 		/// <inheritdoc/>
+		void IWriterError.Error(string message, object[] args) => Error(message, args);
+
+		/// <inheritdoc/>
 		bool IFullNameFactoryHelper.MustUseAssemblyName(IType type) =>
 			FullNameFactory.MustUseAssemblyName(module, type, OptimizeCustomAttributeSerializedTypeNames);
 
