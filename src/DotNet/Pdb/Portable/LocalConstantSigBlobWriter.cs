@@ -25,7 +25,6 @@ namespace dnlib.DotNet.Pdb.Portable {
 					return;
 
 				var et = type.ElementType;
-				writer.WriteByte((byte)et);
 				switch (et) {
 				case ElementType.Boolean:
 				case ElementType.Char:
@@ -37,10 +36,12 @@ namespace dnlib.DotNet.Pdb.Portable {
 				case ElementType.U4:
 				case ElementType.I8:
 				case ElementType.U8:
+					writer.WriteByte((byte)et);
 					WritePrimitiveValue(writer, et, value);
 					return;
 
 				case ElementType.R4:
+					writer.WriteByte((byte)et);
 					if (value is float f)
 						writer.WriteSingle(f);
 					else {
@@ -50,6 +51,7 @@ namespace dnlib.DotNet.Pdb.Portable {
 					return;
 
 				case ElementType.R8:
+					writer.WriteByte((byte)et);
 					if (value is double d)
 						writer.WriteDouble(d);
 					else {
@@ -59,6 +61,7 @@ namespace dnlib.DotNet.Pdb.Portable {
 					return;
 
 				case ElementType.String:
+					writer.WriteByte((byte)et);
 					if (value is null)
 						writer.WriteByte(0xFF);
 					else if (value is string s)
@@ -69,13 +72,16 @@ namespace dnlib.DotNet.Pdb.Portable {
 
 				case ElementType.Ptr:
 				case ElementType.ByRef:
+					writer.WriteByte((byte)et);
 					WriteTypeDefOrRef(writer, new TypeSpecUser(type));
 					return;
 
 				case ElementType.Object:
+					writer.WriteByte((byte)et);
 					return;
 
 				case ElementType.ValueType:
+					writer.WriteByte((byte)et);
 					var tdr = ((ValueTypeSig)type).TypeDefOrRef;
 					var td = tdr.ResolveTypeDef();
 					if (td is null)
@@ -143,15 +149,54 @@ namespace dnlib.DotNet.Pdb.Portable {
 					return;
 
 				case ElementType.Class:
-					WriteTypeDefOrRef(writer, ((ClassSig)type).TypeDefOrRef);
-					if (value is byte[] bytes)
+					var cTdr = ((ClassSig)type).TypeDefOrRef;
+					if (value is byte[] bytes) {
+						writer.WriteByte((byte)et);
 						writer.WriteBytes(bytes);
-					else if (value is not null)
-						helper.Error("Expected a null constant");
+					}
+					else if (value is not null) {
+						writer.WriteByte((byte)ElementType.ValueType);
+						WriteTypeDefOrRef(writer, cTdr);
+						bool valueWritten = false;
+						if (GetName(cTdr, out var ns, out var name) && ns == stringSystem && cTdr.DefinitionAssembly.IsCorLib()) {
+							if (name == stringDecimal) {
+								if (value is decimal dec) {
+									var bits = decimal.GetBits(dec);
+									writer.WriteByte((byte)((((uint)bits[3] >> 31) << 7) | (((uint)bits[3] >> 16) & 0x7F)));
+									writer.WriteInt32(bits[0]);
+									writer.WriteInt32(bits[1]);
+									writer.WriteInt32(bits[2]);
+								}
+								else {
+									helper.Error("Expected a Decimal constant");
+									writer.WriteBytes(new byte[13]);
+								}
+								valueWritten = true;
+							}
+							else if (name == stringDateTime) {
+								if (value is DateTime time)
+									writer.WriteInt64(time.Ticks);
+								else {
+									helper.Error("Expected a DateTime constant");
+									writer.WriteInt64(0);
+								}
+								valueWritten = true;
+							}
+						}
+						if (!valueWritten) {
+							if (value is byte[] b)
+								writer.WriteBytes(b);
+							else if (value is not null) {
+								helper.Error("Unsupported constant: " + value.GetType().FullName);
+								return;
+							}
+						}
+					}
 					return;
 
 				case ElementType.CModReqd:
 				case ElementType.CModOpt:
+					writer.WriteByte((byte)et);
 					WriteTypeDefOrRef(writer, ((ModifierSig)type).Modifier);
 					break;
 
@@ -164,6 +209,7 @@ namespace dnlib.DotNet.Pdb.Portable {
 				case ElementType.FnPtr:
 				case ElementType.SZArray:
 				case ElementType.MVar:
+					writer.WriteByte((byte)et);
 					WriteTypeDefOrRef(writer, new TypeSpecUser(type));
 					return;
 
