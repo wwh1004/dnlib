@@ -390,6 +390,9 @@ namespace dnlib.DotNet {
 		/// </summary>
 		DontCompareReturnType = 0x200,
 
+		// Internal only
+		//SubstituteGenericParameters = 0x400,
+
 		/// <summary>
 		/// Type namespaces are case insensitive
 		/// </summary>
@@ -488,6 +491,8 @@ namespace dnlib.DotNet {
 	/// Compares types, signatures, methods, fields, properties, events
 	/// </summary>
 	public struct SigComparer {
+		const SigComparerOptions SigComparerOptions_DontSubstituteGenericParameters = (SigComparerOptions)0x400;
+
 		const int HASHCODE_MAGIC_GLOBAL_TYPE = 1654396648;
 		const int HASHCODE_MAGIC_NESTED_TYPE = -1049070942;
 		const int HASHCODE_MAGIC_ET_MODULE = -299744851;
@@ -516,6 +521,7 @@ namespace dnlib.DotNet {
 		bool CompareAssemblyLocale => (options & SigComparerOptions.CompareAssemblyLocale) != 0;
 		bool TypeRefCanReferenceGlobalType => (options & SigComparerOptions.TypeRefCanReferenceGlobalType) != 0;
 		bool DontCompareReturnType => (options & SigComparerOptions.DontCompareReturnType) != 0;
+		bool DontSubstituteGenericParameters => (options & SigComparerOptions_DontSubstituteGenericParameters) != 0;
 		bool CaseInsensitiveTypeNamespaces => (options & SigComparerOptions.CaseInsensitiveTypeNamespaces) != 0;
 		bool CaseInsensitiveTypeNames => (options & SigComparerOptions.CaseInsensitiveTypeNames) != 0;
 		bool CaseInsensitiveMethodFieldNames => (options & SigComparerOptions.CaseInsensitiveMethodFieldNames) != 0;
@@ -605,6 +611,12 @@ namespace dnlib.DotNet {
 		SigComparerOptions ClearOptions(SigComparerOptions flags) {
 			var old = options;
 			options &= ~flags;
+			return old;
+		}
+
+		SigComparerOptions SetOptions(SigComparerOptions flags) {
+			var old = options;
+			options |= flags;
 			return old;
 		}
 
@@ -2688,7 +2700,7 @@ exit: ;
 
 			int hash = GetHashCode_MethodFieldName(a.Name);
 			GenericInstSig git;
-			if ((git = GetGenericInstanceType(a.Class)) is not null) {
+			if (!DontSubstituteGenericParameters && (git = GetGenericInstanceType(a.Class)) is not null) {
 				InitializeGenericArguments();
 				genericArguments.PushTypeArgs(git.GenericArguments);
 				hash += GetHashCode(a.Signature);
@@ -4004,6 +4016,7 @@ exit: ;
 				result = a.IsMethodRef && a.MethodSig.Generic;
 
 				var oldOptions = ClearOptions(SigComparerOptions.CompareMethodFieldDeclaringType);
+				SetOptions(SigComparerOptions_DontSubstituteGenericParameters);
 				result = result && Equals(a, b.Module.ResolveMethod(b.MetadataToken));
 				RestoreOptions(oldOptions);
 				result = result && DeclaringTypeEquals(a, b);
@@ -4017,7 +4030,15 @@ exit: ;
 						((amSig.Generic && b.IsGenericMethodDefinition && b.IsGenericMethod) ||
 						(!amSig.Generic && !b.IsGenericMethodDefinition && !b.IsGenericMethod));
 
-				result = result && Equals(amSig, b);
+				GenericInstSig git;
+				if (!DontSubstituteGenericParameters && (git = GetGenericInstanceType(a.Class)) is not null) {
+					InitializeGenericArguments();
+					genericArguments.PushTypeArgs(git.GenericArguments);
+					result = result && Equals(amSig, b);
+					genericArguments.PopTypeArgs();
+				}
+				else
+					result = result && Equals(amSig, b);
 
 				result = result && (!CompareMethodFieldDeclaringType || Equals(a.Class, b.DeclaringType, b.Module));
 			}
@@ -4105,6 +4126,7 @@ exit: ;
 			// declaring type (its declaring type is a generic type def).
 			// NOTE: We must not push generic method args when comparing a.Method
 			var oldOptions = ClearOptions(SigComparerOptions.CompareMethodFieldDeclaringType);
+			SetOptions(SigComparerOptions_DontSubstituteGenericParameters);
 			result = result && Equals(a.Method, b.Module.ResolveMethod(b.MetadataToken));
 			RestoreOptions(oldOptions);
 			result = result && DeclaringTypeEquals(a.Method, b);
@@ -4491,7 +4513,7 @@ exit: ;
 			bool result = Equals_MethodFieldNames(a.Name, b.Name);
 
 			GenericInstSig git;
-			if ((git = GetGenericInstanceType(a.Class)) is not null) {
+			if (!DontSubstituteGenericParameters && (git = GetGenericInstanceType(a.Class)) is not null) {
 				InitializeGenericArguments();
 				genericArguments.PushTypeArgs(git.GenericArguments);
 				result = result && Equals(a.FieldSig, b);
