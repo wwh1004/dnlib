@@ -390,9 +390,6 @@ namespace dnlib.DotNet {
 		/// </summary>
 		DontCompareReturnType = 0x200,
 
-		// Internal only
-		//SubstituteGenericParameters = 0x400,
-
 		/// <summary>
 		/// Type namespaces are case insensitive
 		/// </summary>
@@ -4020,15 +4017,7 @@ exit: ;
 						((amSig.Generic && b.IsGenericMethodDefinition && b.IsGenericMethod) ||
 						(!amSig.Generic && !b.IsGenericMethodDefinition && !b.IsGenericMethod));
 
-				GenericInstSig git;
-				if ((git = GetGenericInstanceType(a.Class)) is not null) {
-					InitializeGenericArguments();
-					genericArguments.PushTypeArgs(git.GenericArguments);
-					result = result && Equals(amSig, b);
-					genericArguments.PopTypeArgs();
-				}
-				else
-					result = result && Equals(amSig, b);
+				result = result && Equals(amSig, b);
 
 				result = result && (!CompareMethodFieldDeclaringType || Equals(a.Class, b.DeclaringType, b.Module));
 			}
